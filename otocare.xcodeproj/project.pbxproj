@@ -1,0 +1,478 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B274BD80198F7738001FBFDC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B274BD7F198F7738001FBFDC /* Foundation.framework */; };
+		B274BD82198F7738001FBFDC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B274BD81198F7738001FBFDC /* CoreGraphics.framework */; };
+		B274BD84198F7738001FBFDC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B274BD83198F7738001FBFDC /* UIKit.framework */; };
+		B274BD8A198F7738001FBFDC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B274BD88198F7738001FBFDC /* InfoPlist.strings */; };
+		B274BD8C198F7738001FBFDC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B274BD8B198F7738001FBFDC /* main.m */; };
+		B274BD90198F7738001FBFDC /* AABAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B274BD8F198F7738001FBFDC /* AABAppDelegate.m */; };
+		B274BD93198F7738001FBFDC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B274BD91198F7738001FBFDC /* Main.storyboard */; };
+		B274BD96198F7738001FBFDC /* AABFirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B274BD95198F7738001FBFDC /* AABFirstViewController.m */; };
+		B274BD99198F7738001FBFDC /* AABSecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B274BD98198F7738001FBFDC /* AABSecondViewController.m */; };
+		B274BD9B198F7738001FBFDC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B274BD9A198F7738001FBFDC /* Images.xcassets */; };
+		B274BDA2198F7738001FBFDC /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B274BDA1198F7738001FBFDC /* XCTest.framework */; };
+		B274BDA3198F7738001FBFDC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B274BD7F198F7738001FBFDC /* Foundation.framework */; };
+		B274BDA4198F7738001FBFDC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B274BD83198F7738001FBFDC /* UIKit.framework */; };
+		B274BDAC198F7738001FBFDC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B274BDAA198F7738001FBFDC /* InfoPlist.strings */; };
+		B274BDAE198F7738001FBFDC /* otocareTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B274BDAD198F7738001FBFDC /* otocareTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B274BDA5198F7738001FBFDC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B274BD74198F7738001FBFDC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B274BD7B198F7738001FBFDC;
+			remoteInfo = otocare;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		B274BD7C198F7738001FBFDC /* otocare.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = otocare.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B274BD7F198F7738001FBFDC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		B274BD81198F7738001FBFDC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		B274BD83198F7738001FBFDC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		B274BD87198F7738001FBFDC /* otocare-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "otocare-Info.plist"; sourceTree = "<group>"; };
+		B274BD89198F7738001FBFDC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B274BD8B198F7738001FBFDC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B274BD8D198F7738001FBFDC /* otocare-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "otocare-Prefix.pch"; sourceTree = "<group>"; };
+		B274BD8E198F7738001FBFDC /* AABAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AABAppDelegate.h; sourceTree = "<group>"; };
+		B274BD8F198F7738001FBFDC /* AABAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AABAppDelegate.m; sourceTree = "<group>"; };
+		B274BD92198F7738001FBFDC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B274BD94198F7738001FBFDC /* AABFirstViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AABFirstViewController.h; sourceTree = "<group>"; };
+		B274BD95198F7738001FBFDC /* AABFirstViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AABFirstViewController.m; sourceTree = "<group>"; };
+		B274BD97198F7738001FBFDC /* AABSecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AABSecondViewController.h; sourceTree = "<group>"; };
+		B274BD98198F7738001FBFDC /* AABSecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AABSecondViewController.m; sourceTree = "<group>"; };
+		B274BD9A198F7738001FBFDC /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		B274BDA0198F7738001FBFDC /* otocareTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = otocareTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B274BDA1198F7738001FBFDC /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		B274BDA9198F7738001FBFDC /* otocareTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "otocareTests-Info.plist"; sourceTree = "<group>"; };
+		B274BDAB198F7738001FBFDC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B274BDAD198F7738001FBFDC /* otocareTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = otocareTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B274BD79198F7738001FBFDC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B274BD82198F7738001FBFDC /* CoreGraphics.framework in Frameworks */,
+				B274BD84198F7738001FBFDC /* UIKit.framework in Frameworks */,
+				B274BD80198F7738001FBFDC /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B274BD9D198F7738001FBFDC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B274BDA2198F7738001FBFDC /* XCTest.framework in Frameworks */,
+				B274BDA4198F7738001FBFDC /* UIKit.framework in Frameworks */,
+				B274BDA3198F7738001FBFDC /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B274BD73198F7738001FBFDC = {
+			isa = PBXGroup;
+			children = (
+				B274BD85198F7738001FBFDC /* otocare */,
+				B274BDA7198F7738001FBFDC /* otocareTests */,
+				B274BD7E198F7738001FBFDC /* Frameworks */,
+				B274BD7D198F7738001FBFDC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B274BD7D198F7738001FBFDC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B274BD7C198F7738001FBFDC /* otocare.app */,
+				B274BDA0198F7738001FBFDC /* otocareTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B274BD7E198F7738001FBFDC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B274BD7F198F7738001FBFDC /* Foundation.framework */,
+				B274BD81198F7738001FBFDC /* CoreGraphics.framework */,
+				B274BD83198F7738001FBFDC /* UIKit.framework */,
+				B274BDA1198F7738001FBFDC /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B274BD85198F7738001FBFDC /* otocare */ = {
+			isa = PBXGroup;
+			children = (
+				B274BD8E198F7738001FBFDC /* AABAppDelegate.h */,
+				B274BD8F198F7738001FBFDC /* AABAppDelegate.m */,
+				B274BD91198F7738001FBFDC /* Main.storyboard */,
+				B274BD94198F7738001FBFDC /* AABFirstViewController.h */,
+				B274BD95198F7738001FBFDC /* AABFirstViewController.m */,
+				B274BD97198F7738001FBFDC /* AABSecondViewController.h */,
+				B274BD98198F7738001FBFDC /* AABSecondViewController.m */,
+				B274BD9A198F7738001FBFDC /* Images.xcassets */,
+				B274BD86198F7738001FBFDC /* Supporting Files */,
+			);
+			path = otocare;
+			sourceTree = "<group>";
+		};
+		B274BD86198F7738001FBFDC /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B274BD87198F7738001FBFDC /* otocare-Info.plist */,
+				B274BD88198F7738001FBFDC /* InfoPlist.strings */,
+				B274BD8B198F7738001FBFDC /* main.m */,
+				B274BD8D198F7738001FBFDC /* otocare-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B274BDA7198F7738001FBFDC /* otocareTests */ = {
+			isa = PBXGroup;
+			children = (
+				B274BDAD198F7738001FBFDC /* otocareTests.m */,
+				B274BDA8198F7738001FBFDC /* Supporting Files */,
+			);
+			path = otocareTests;
+			sourceTree = "<group>";
+		};
+		B274BDA8198F7738001FBFDC /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B274BDA9198F7738001FBFDC /* otocareTests-Info.plist */,
+				B274BDAA198F7738001FBFDC /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B274BD7B198F7738001FBFDC /* otocare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B274BDB1198F7738001FBFDC /* Build configuration list for PBXNativeTarget "otocare" */;
+			buildPhases = (
+				B274BD78198F7738001FBFDC /* Sources */,
+				B274BD79198F7738001FBFDC /* Frameworks */,
+				B274BD7A198F7738001FBFDC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = otocare;
+			productName = otocare;
+			productReference = B274BD7C198F7738001FBFDC /* otocare.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B274BD9F198F7738001FBFDC /* otocareTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B274BDB4198F7738001FBFDC /* Build configuration list for PBXNativeTarget "otocareTests" */;
+			buildPhases = (
+				B274BD9C198F7738001FBFDC /* Sources */,
+				B274BD9D198F7738001FBFDC /* Frameworks */,
+				B274BD9E198F7738001FBFDC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B274BDA6198F7738001FBFDC /* PBXTargetDependency */,
+			);
+			name = otocareTests;
+			productName = otocareTests;
+			productReference = B274BDA0198F7738001FBFDC /* otocareTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B274BD74198F7738001FBFDC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = AAB;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "PT. Asuransi Astra Buana";
+				TargetAttributes = {
+					B274BD9F198F7738001FBFDC = {
+						TestTargetID = B274BD7B198F7738001FBFDC;
+					};
+				};
+			};
+			buildConfigurationList = B274BD77198F7738001FBFDC /* Build configuration list for PBXProject "otocare" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B274BD73198F7738001FBFDC;
+			productRefGroup = B274BD7D198F7738001FBFDC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B274BD7B198F7738001FBFDC /* otocare */,
+				B274BD9F198F7738001FBFDC /* otocareTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B274BD7A198F7738001FBFDC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B274BD9B198F7738001FBFDC /* Images.xcassets in Resources */,
+				B274BD8A198F7738001FBFDC /* InfoPlist.strings in Resources */,
+				B274BD93198F7738001FBFDC /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B274BD9E198F7738001FBFDC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B274BDAC198F7738001FBFDC /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B274BD78198F7738001FBFDC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B274BD8C198F7738001FBFDC /* main.m in Sources */,
+				B274BD96198F7738001FBFDC /* AABFirstViewController.m in Sources */,
+				B274BD90198F7738001FBFDC /* AABAppDelegate.m in Sources */,
+				B274BD99198F7738001FBFDC /* AABSecondViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B274BD9C198F7738001FBFDC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B274BDAE198F7738001FBFDC /* otocareTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B274BDA6198F7738001FBFDC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B274BD7B198F7738001FBFDC /* otocare */;
+			targetProxy = B274BDA5198F7738001FBFDC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B274BD88198F7738001FBFDC /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B274BD89198F7738001FBFDC /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		B274BD91198F7738001FBFDC /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B274BD92198F7738001FBFDC /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		B274BDAA198F7738001FBFDC /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B274BDAB198F7738001FBFDC /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B274BDAF198F7738001FBFDC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		B274BDB0198F7738001FBFDC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B274BDB2198F7738001FBFDC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "otocare/otocare-Prefix.pch";
+				INFOPLIST_FILE = "otocare/otocare-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		B274BDB3198F7738001FBFDC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "otocare/otocare-Prefix.pch";
+				INFOPLIST_FILE = "otocare/otocare-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		B274BDB5198F7738001FBFDC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/otocare.app/otocare";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "otocare/otocare-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "otocareTests/otocareTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		B274BDB6198F7738001FBFDC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/otocare.app/otocare";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "otocare/otocare-Prefix.pch";
+				INFOPLIST_FILE = "otocareTests/otocareTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B274BD77198F7738001FBFDC /* Build configuration list for PBXProject "otocare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B274BDAF198F7738001FBFDC /* Debug */,
+				B274BDB0198F7738001FBFDC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B274BDB1198F7738001FBFDC /* Build configuration list for PBXNativeTarget "otocare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B274BDB2198F7738001FBFDC /* Debug */,
+				B274BDB3198F7738001FBFDC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		B274BDB4198F7738001FBFDC /* Build configuration list for PBXNativeTarget "otocareTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B274BDB5198F7738001FBFDC /* Debug */,
+				B274BDB6198F7738001FBFDC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B274BD74198F7738001FBFDC /* Project object */;
+}
