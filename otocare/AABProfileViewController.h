@@ -9,5 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface AABProfileViewController : UIViewController
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *submitButton;
+@property (weak, nonatomic) IBOutlet UITextField *policeNumber;
+@property (weak, nonatomic) IBOutlet UITextField *chassisNumber;
 
 @end

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AABConstantKeys</key>
+	<dict>
+		<key>AABGoogleAPIKey</key>
+		<string>AIzaSyDyxGaAlNHxtuz5RhUcGmM23JkTtdro-1U</string>
+		<key>AABBaseURL</key>
+		<string>http://www.asuransiastra.com/api</string>
+		<key>AABAPIKey</key>
+		<string>d67acd1c1fa33b68055f9f7dafaa3ae0</string>
+		<key>AABAPISecret</key>
+		<string>7cb0533b94446f4c49f1eadcffe5f19a31b25d5d</string>
+	</dict>
+</dict>
+</plist>

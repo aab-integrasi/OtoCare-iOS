@@ -7,11 +7,32 @@
 //
 
 #import "AABAppDelegate.h"
+#import <GoogleMaps/GoogleMaps.h>
+#import "AABConstants.h"
 
 @implementation AABAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
+    
+//    if (AABGoogleAPIKey == Nil) {
+//        [AABConstants initialize];
+//    }
+//    
+//    [GMSServices provideAPIKey:AABGoogleAPIKey];
+    
+//    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstRun"]) {
+//        if ([IMAuthManager sharedManager].activeUser) {
+//            [[IMAuthManager sharedManager].activeUser deleteFromKeychain];
+//            [IMAuthManager sharedManager].activeUser = nil;
+//        }
+//        
+//        NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+//        [def setBool:NO forKey:@"FirstRun"];
+//        [def setBool:YES forKey:IMBackgroundUpdates];
+//        [def synchronize];
+//    }
     
     // Handle launching from a notification
     UILocalNotification *locationNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];

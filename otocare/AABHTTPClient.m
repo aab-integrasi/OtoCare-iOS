@@ -39,7 +39,7 @@
         if (!instance) {
             instance = [[AABHTTPClient alloc] init];
         }
-        else if(![instance.baseURL isEqual:[NSURL URLWithString:@AABBaseURL]])
+        else if(![instance.baseURL isEqual:[NSURL URLWithString:AABBaseURL]])
         {
             //reinit instance
             instance = [[AABHTTPClient alloc] init];
@@ -60,17 +60,17 @@
     // NSLog(@"After: %@", [object getURL]);
     //    NSString *gURL =  [object getURL];
     
-//    if (IMBaseURL == Nil) {
-//        [IMConstants initialize];
-//    }
+    if (AABBaseURL == Nil) {
+        [AABConstants initialize];
+    }
     
     
     
-    self = [super initWithBaseURL:[NSURL URLWithString:@AABBaseURL]];
+    self = [super initWithBaseURL:[NSURL URLWithString:AABBaseURL]];
     //    self = [super initWithBaseURL:[NSURL URLWithString:gURL]];
     
     self.parameterEncoding = AFFormURLParameterEncoding;
-    [self setDefaultHeader:@"User-Agent" value:@"IMS for iPad"];
+    [self setDefaultHeader:@"User-Agent" value:@"otocare"];
     [self setDefaultHeader:@"Accept" value:@"application/json"];
     [self setupAuthenticationHeader];
     [self setAllowsInvalidSSLCertificate:YES];
@@ -79,7 +79,7 @@
 }
 + (void)setNewURL
 {
-    [self clientWithBaseURL:[NSURL URLWithString:@AABBaseURL]];
+    [self clientWithBaseURL:[NSURL URLWithString:AABBaseURL]];
 }
 
 - (void)setNewBaseURL
@@ -104,9 +104,9 @@
 {
     NSString *accessToken = [AABAuthManager sharedManager].activeUser.accessToken;
     
-//    if (AABAPIKey == Nil) {
-//        [IMConstants initialize];
-//    }
+    if (AABAPIKey == Nil) {
+        [AABConstants initialize];
+    }
     if (accessToken) { [self setAuthorizationHeaderWithUsername:AABAPIKey password:accessToken]; }
     else { [self clearAuthorizationHeader]; NSLog(@"default headers: %@", [self defaultValueForHeader:@"Authorization"]); }
 }
