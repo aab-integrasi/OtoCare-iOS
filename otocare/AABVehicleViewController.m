@@ -13,6 +13,8 @@
 #import "AABTableHeaderView.h"
 #import "AABFormCell.h"
 #import "AABDatePickerVC.h"
+#import "Vehicle+Extended.h"
+#import "AABDBManager.h"
 
 
 #define kPickerAnimationDuration    0.40   // duration for the animation to slide the date picker into view
@@ -31,7 +33,7 @@ static NSString *kCellAddress = @"cellAddress";     // the remaining cells at th
 static NSString *kCell = @"cell";     // the remaining cells at the end
 
 
-@interface AABVehicleViewController ()
+@interface AABVehicleViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UIDatePicker *pickerView;
 
 @property (nonatomic, strong) NSArray *dataArray;
@@ -58,7 +60,21 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 
 - (BOOL) validate {
     
-    return YES;
+    /*
+     
+     B 1972 SON
+     Ford
+     Fiesta
+     2012
+     MNBJXXRDJGBS58166
+     N5JABS68176
+     */
+    NSLog(@"policeNumber : %@, brand : %@, type : %@, year : %@, chassisNumber : %@, engineNumber : %@ , stnkExpired : %@",self.vehicle.policeNumber,self.vehicle.brand,self.vehicle.type,self.vehicle.year,self.vehicle.chassisNumber,self.vehicle.engineNumber,self.vehicle.stnkExpiredDate);
+    BOOL value = NO;
+    value = self.vehicle.policeNumber != Nil;
+    value &= self.vehicle.policeNumber && self.vehicle.brand && self.vehicle.type && self.vehicle.year && self.vehicle.chassisNumber && self.vehicle.engineNumber && self.vehicle.stnkExpiredDate;
+    
+    return value;
 }
 
 - (void)viewDidLoad
@@ -71,15 +87,6 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    /*
-     
-     
-     
-     
-     
-     
-     
-     */
     
     // setup our data source
     NSMutableDictionary *policeNum = [@{ kTitleKey : @"Police number" } mutableCopy];
@@ -110,7 +117,14 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                                              selector:@selector(localeChanged:)
                                                  name:NSCurrentLocaleDidChangeNotification
                                                object:nil];
-    
+    //create new vehicle object
+    if (!self.vehicle) {
+        //create vehicle
+        NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+       
+        //create new personal
+        self.vehicle = [Vehicle newVehicleInContext:context];
+    }
 }
 
 - (void)dealloc
@@ -277,6 +291,11 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     
     // update the cell's date string
     cell.detailTextLabel.text = [self.dateFormatter stringFromDate:targetedDatePicker.date];
+    
+    if (targetedCellIndexPath.row == kDateSTNKRow) {
+        //save date
+        self.vehicle.stnkExpiredDate = targetedDatePicker.date;
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -330,64 +349,66 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
+            
+           
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Police number";
-            cell.textValue.placeholder = @"e.g Jafar";
-            //                cell.textValue.text = self.registration.bioData.firstName;
+            cell.textValue.placeholder = @"e.g B 1972 SON";
+            cell.textValue.text = self.vehicle.policeNumber;
             cell.onTextValueReturn = ^(NSString *value){
-                //                    self.registration.bioData.firstName = value;
+                                    self.vehicle.policeNumber = value;
             };
-            cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
+            cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet], [NSCharacterSet uppercaseLetterCharacterSet]];
             cell.maxCharCount = 40;
         }else if (indexPath.row == 1) {
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Vehicle brand";
-            cell.textValue.placeholder = @"e.g xxx@gmail.com";
-            //            cell.textValue.text = self.registration.bioData.firstName;
+            cell.textValue.placeholder = @"e.g Ford";
+                       cell.textValue.text = self.vehicle.brand;
             cell.onTextValueReturn = ^(NSString *value){
-                //                self.registration.bioData.firstName = value;
+                                self.vehicle.brand = value;
             };
             cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
             cell.maxCharCount = 20;
         }else if (indexPath.row == 2) {
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Vehicle type";
-            cell.textValue.placeholder = @"e.g 081122334455";
-            //                cell.textValue.text = self.registration.unhcrNumber;
+            cell.textValue.placeholder = @"e.g Fiesta";
+                            cell.textValue.text = self.vehicle.type;
             cell.onTextValueReturn = ^(NSString *value){
-                
+                self.vehicle.type = value;
             };
             cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
             cell.maxCharCount = 20;
         }else if (indexPath.row == 3) {
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Vehicle year";
-            cell.textValue.placeholder = @"Jl. Kacang,Setiabudi";
-            //            cell.textValue.text = self.registration.bioData.firstName;
+            cell.textValue.placeholder = @"2012";
+                       cell.textValue.text = self.vehicle.year;
             cell.onTextValueReturn = ^(NSString *value){
-                //                self.registration.bioData.firstName = value;
+                                self.vehicle.year = value;
             };
             cell.characterSets = @[[NSCharacterSet characterSetWithCharactersInString:@"0123456789"]];
             cell.maxCharCount = 4;
         }else if (indexPath.row == 4) {
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Chassis number";
-            cell.textValue.placeholder = @"Jl. Kacang,Setiabudi";
-            //            cell.textValue.text = self.registration.bioData.firstName;
+            cell.textValue.placeholder = @"e.g MNBJXXRDJGBS58166";
+                        cell.textValue.text = self.vehicle.chassisNumber;
             cell.onTextValueReturn = ^(NSString *value){
-                //                self.registration.bioData.firstName = value;
+                                self.vehicle.chassisNumber = value;
             };
-            cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
+            cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet], [NSCharacterSet uppercaseLetterCharacterSet]];
             cell.maxCharCount = 20;
         }else if (indexPath.row == 5) {
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Engine number";
-            cell.textValue.placeholder = @"Jl. Kacang,Setiabudi";
-            //            cell.textValue.text = self.registration.bioData.firstName;
+            cell.textValue.placeholder = @"e.g N5JABS68176";
+                        cell.textValue.text = self.vehicle.engineNumber;
             cell.onTextValueReturn = ^(NSString *value){
-                //                self.registration.bioData.firstName = value;
+                                self.vehicle.engineNumber = value;
             };
-            cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
+            cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet], [NSCharacterSet uppercaseLetterCharacterSet]];
             cell.maxCharCount = 20;
         }
     }
@@ -556,4 +577,68 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 {
     return ([self indexPathHasPicker:indexPath] ? self.pickerCellRowHeight : self.tableView.rowHeight);
 }
+
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+    
+    if ([identifier isEqualToString:@"ShowInsurance"]) {
+        if (![self validate])  {
+            //show alert that some data must be filled before next step
+            //            NSString * message = @"Please fill ";
+            NSString *message = [[NSString alloc] init];
+            //            message = @"Please fill ";
+            [message stringByAppendingString:@"Please fill "];
+            
+            message = [NSString stringWithFormat:@"%@",@"Please fill "];
+        
+            
+            [message stringByAppendingString:@" value"];
+            //show message
+            [self showAlertWithTitle:@"Invalid input" message:message];
+            
+            NSLog(@"message : %@",message);
+            message = Nil;
+            return NO;
+        }
+        
+    }
+    return YES;
+    
+}
+
+- (void)setPersonal:(Personal *)personal
+{
+    if (personal) {
+        _personal = personal;
+        //check if there is current Vehicle data, case exist, then update.
+        if ([self.personal.vehicle count]) {
+            //case exist, then update value
+            NSArray * data = [self.personal.vehicle allObjects];
+            
+            self.vehicle = [data lastObject];
+        }
+    }
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@"ShowInsurance"]) {
+        [[segue destinationViewController] setDelegate:self];
+        //check if there is current Vehicle data, case exist, then update. Case not, then add
+        if ([self.personal.vehicle count]) {
+            NSError * error;
+            //save database
+            [self.personal.managedObjectContext save:&error];
+            if (error) {
+                NSLog(@"Error while saving to database : %@", [error description]);
+            }
+        }else {
+            //case not exist
+        //concatenate personal and vehicle
+        [self.personal addVehicleObject:self.vehicle];
+        }
+        [[segue destinationViewController] setPersonal:self.personal];
+    }
+}
+
 @end

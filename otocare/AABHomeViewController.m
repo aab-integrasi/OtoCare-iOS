@@ -7,8 +7,11 @@
 //
 
 #import "AABHomeViewController.h"
+#import "AABDBManager.h"
+#import "Personal.h"
 
 @interface AABHomeViewController ()
+
 
 @end
 
@@ -27,6 +30,24 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    
+    //check from database
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Personal"];
+    request.returnsObjectsAsFaults = YES;
+    
+    NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+    // Generate data
+    NSError *error;
+    NSArray * result = [context executeFetchRequest:request error:&error];
+    if (error){
+        NSLog(@"Error Loading Data : %@",[error description]);
+    }
+    
+    if ([result count]) {
+        //get data from database
+        self.personal = [result lastObject];
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning

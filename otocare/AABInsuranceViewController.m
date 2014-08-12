@@ -11,6 +11,9 @@
 #import "AABTableHeaderView.h"
 #import "AABFormCell.h"
 #import "AABDatePickerVC.h"
+#import "AABDBManager.h"
+#import "Insurance+Extended.h"
+#import "Personal+Export.h"
 
 
 #define kPickerAnimationDuration    0.40   // duration for the animation to slide the date picker into view
@@ -21,8 +24,8 @@
 
 // keep track of which rows have date cells
 #define kAddressRow     3
-#define kDateBirthRow   4
-#define kDateSIMRow     5
+#define kPolicyPeriodFromRow   2
+#define kPolicyPeriodToRow     3
 
 static NSString *kDateCellID = @"dateCell";     // the cells with the start or end date
 static NSString *kDatePickerID = @"datePicker"; // the cell containing the date picker
@@ -53,7 +56,51 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     }
     return self;
 }
-
+- (IBAction)save:(id)sender {
+    //check for validation
+    if (![self validate])  {
+        //show alert that some data must be filled before next step
+        //            NSString * message = @"Please fill ";
+        NSString *message = [[NSString alloc] init];
+        //            message = @"Please fill ";
+        [message stringByAppendingString:@"Please fill "];
+        
+        message = [NSString stringWithFormat:@"%@",@"Please fill "];
+        
+        
+        [message stringByAppendingString:@" value"];
+        //show message
+        [self showAlertWithTitle:@"Invalid input" message:message];
+        
+        NSLog(@"message : %@",message);
+        message = Nil;
+//        return NO;
+    }else {
+        
+        //check if there is current Vehicle data, case exist, then update. Case not, then add
+        if (![self.personal.insurance count]) {
+            //case not exist
+            //concatenate personal and vehicle
+            //save to database & notify database change
+            //concatenate personal and vehicle
+            [self.personal addInsuranceObject:self.insurance];
+        }
+        
+        NSError * error;
+        //save database
+        [self.personal.managedObjectContext save:&error];
+        if (error) {
+            NSLog(@"Error while saving to database : %@", [error description]);
+        }else{
+        //save database success
+        [[NSNotificationCenter defaultCenter] postNotificationName:AABDatabaseChangedNotification object:nil];
+            //close view controller
+                    [self dismissViewControllerAnimated:YES completion:nil];
+        }
+        
+        NSLog(@"json example : %@",[self.personal formatted]);
+    }
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -65,17 +112,24 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     // setup our data source
-    NSMutableDictionary *name = [@{ kTitleKey : @"Name" } mutableCopy];
-    NSMutableDictionary *email = [@{ kTitleKey : @"email" } mutableCopy];
-    NSMutableDictionary *tlp = [@{ kTitleKey : @"Telephone Number" } mutableCopy];
-    NSMutableDictionary *address = [@{ kTitleKey : @"Home address" } mutableCopy];
-    NSMutableDictionary *birth = [@{ kTitleKey : @"Date of birth",
+    /*
+     
+     policyNumber 0413008074
+     insurance Name  Garda Oto
+     policy period from
+     policy period to
+     Coverage jkbsfvjkbsdkvjb
+     */
+    NSMutableDictionary *policyNumber = [@{ kTitleKey : @"Policy Number" } mutableCopy];
+    NSMutableDictionary *insuranceName = [@{ kTitleKey : @"Insurance Name" } mutableCopy];
+    NSMutableDictionary *coverage = [@{ kTitleKey : @"Coverage" } mutableCopy];
+    NSMutableDictionary *periodFrom = [@{ kTitleKey : @"Policy period from",
                                      kDateKey : [NSDate date] } mutableCopy];
-    NSMutableDictionary *sim = [@{ kTitleKey : @"SIM expired date",
+    NSMutableDictionary *periodTo = [@{ kTitleKey : @"Policy period to",
                                    kDateKey : [NSDate date] } mutableCopy];
     
     
-    self.dataArray = @[name,email,tlp,address,birth,sim];
+    self.dataArray = @[policyNumber,insuranceName,periodFrom,periodTo,coverage];
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateStyle:NSDateFormatterShortStyle];    // show short-style date format
@@ -92,6 +146,16 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                                              selector:@selector(localeChanged:)
                                                  name:NSCurrentLocaleDidChangeNotification
                                                object:nil];
+    
+    //create new vehicle object
+    if (!self.insurance) {
+        //create vehicle
+        NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+        
+        //create new personal
+        self.insurance = [Insurance newInsuranceInContext:context];
+    }
+    
     
 }
 
@@ -196,9 +260,9 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 - (BOOL)indexPathHasDate:(NSIndexPath *)indexPath
 {
     BOOL hasDate = NO;
-    
-    if ((indexPath.row == kDateBirthRow) ||
-        (indexPath.row == kDateSIMRow || ([self hasInlineDatePicker] && (indexPath.row == kDateSIMRow + 1))))
+
+    if ((indexPath.row == kPolicyPeriodFromRow) ||
+        (indexPath.row == kPolicyPeriodToRow || ([self hasInlineDatePicker] && (indexPath.row == kPolicyPeriodToRow + 1))))
     {
         hasDate = YES;
     }
@@ -240,7 +304,17 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 
 - (BOOL) validate {
     
-    return YES;
+    /*
+     policyNumber 0413008074
+     insurance Name  Garda Oto
+     Coverage jkbsfvjkbsdkvjb
+     */
+    
+    BOOL value = NO;
+    value = self.insurance.policyNumber != Nil;
+    value &= self.insurance.name && self.insurance.coverage && self.insurance.policyPeriodFrom && self.insurance.policyPeriodTo;
+    
+    return value;
 }
 
 #pragma mark - Table view data source
@@ -283,6 +357,17 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     
     // update the cell's date string
     cell.detailTextLabel.text = [self.dateFormatter stringFromDate:targetedDatePicker.date];
+    
+    //#define kPolicyPeriodFromRow   2
+    //#define kPolicyPeriodToRow     3
+    
+    if (targetedCellIndexPath.row == kPolicyPeriodFromRow) {
+        //save date
+        self.insurance.policyPeriodFrom = targetedDatePicker.date;
+    }else if (targetedCellIndexPath.row == kPolicyPeriodToRow){
+               self.insurance.policyPeriodTo = targetedDatePicker.date;
+    }
+    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -339,41 +424,31 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
-            cell.labelTitle.text = @"Name";
-            cell.textValue.placeholder = @"e.g Jafar";
-            //                cell.textValue.text = self.registration.bioData.firstName;
+            cell.labelTitle.text = @"Policy Number";
+            cell.textValue.placeholder = @"e.g 0413008074";
+                           cell.textValue.text = self.insurance.policyNumber;
             cell.onTextValueReturn = ^(NSString *value){
-                //                    self.registration.bioData.firstName = value;
+                                    self.insurance.policyNumber = value;
             };
-            cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
+            cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet characterSetWithCharactersInString:@"-"],[NSCharacterSet uppercaseLetterCharacterSet]];
             cell.maxCharCount = 40;
         }else if (indexPath.row == 1) {
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
-            cell.labelTitle.text = @"email";
-            cell.textValue.placeholder = @"e.g xxx@gmail.com";
-            //            cell.textValue.text = self.registration.bioData.firstName;
+            cell.labelTitle.text = @"Insurance Name";
+            cell.textValue.placeholder = @"e.g Garda Oto";
+                      cell.textValue.text = self.insurance.name;
             cell.onTextValueReturn = ^(NSString *value){
-                //                self.registration.bioData.firstName = value;
+                               self.insurance.name = value;
             };
             cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
             cell.maxCharCount = 20;
-        }else if (indexPath.row == 2) {
+        }else if (indexPath.row == 4) {
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
-            cell.labelTitle.text = @"Telephone Number";
-            cell.textValue.placeholder = @"e.g 081122334455";
-            //                cell.textValue.text = self.registration.unhcrNumber;
+            cell.labelTitle.text = @"Coverage";
+            cell.textValue.placeholder = @"e.g Comprehensive";
+                       cell.textValue.text = self.insurance.coverage;
             cell.onTextValueReturn = ^(NSString *value){
-                
-            };
-            cell.characterSets = @[[NSCharacterSet characterSetWithCharactersInString:@"0123456789"]];
-            cell.maxCharCount = 15;
-        }else if (indexPath.row == 3) {
-            cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
-            cell.labelTitle.text = @"Home Address";
-            cell.textValue.placeholder = @"Jl. Kacang,Setiabudi";
-            //            cell.textValue.text = self.registration.bioData.firstName;
-            cell.onTextValueReturn = ^(NSString *value){
-                //                self.registration.bioData.firstName = value;
+                               self.insurance.coverage = value;
             };
             cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
             cell.maxCharCount = 200;
@@ -538,6 +613,21 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     }
 }
 
+- (void)setPersonal:(Personal *)personal
+{
+    if (personal) {
+        _personal = personal;
+        
+        //check if there is current Vehicle data, case exist, then update.
+        if ([self.personal.insurance count]) {
+            //case exist, then update value
+            NSArray * data = [self.personal.insurance allObjects];
+            
+            self.insurance = [data lastObject];
+        }
+        
+    }
+}
 #pragma mark - UITableViewDataSource
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

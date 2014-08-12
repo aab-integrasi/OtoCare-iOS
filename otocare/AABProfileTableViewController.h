@@ -8,7 +8,20 @@
 
 #import <UIKit/UIKit.h>
 #import "AABTableViewController.h"
+#import "Personal.h"
+#import "AABVehicleViewController.h"
 
-@interface AABProfileTableViewController : AABTableViewController
+
+@protocol AABProfileTableViewControllerDelegate;
+
+@interface AABProfileTableViewController : AABTableViewController <AABVehicleViewControllerDelegate>
+
+@property (nonatomic, strong) Personal *personal;
+@property (weak, atomic) id<AABProfileTableViewControllerDelegate> delegate;
+
+@end
+
+
+@protocol AABProfileTableViewControllerDelegate <NSObject>
 
 @end

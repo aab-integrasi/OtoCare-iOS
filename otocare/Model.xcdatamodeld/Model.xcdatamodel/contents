@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="Entity" syncable="YES"/>
-    <entity name="Insurance" syncable="YES">
+    <entity name="Insurance" representedClassName="Insurance" syncable="YES">
         <attribute name="coverage" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="policyNumber" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="policyPeriodFrom" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="policyPeriodTo" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="personal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Personal" inverseName="insurance" inverseEntity="Personal" syncable="YES"/>
     </entity>
-    <entity name="Personal" syncable="YES">
+    <entity name="Personal" representedClassName="Personal" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="dateOfBirth" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isCustomer" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="name" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="simExpiredDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="telephone" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="insurance" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Insurance" inverseName="personal" inverseEntity="Insurance" syncable="YES"/>
-        <relationship name="vehicle" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Vehicle" inverseName="personal" inverseEntity="Vehicle" syncable="YES"/>
+        <relationship name="insurance" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Insurance" inverseName="personal" inverseEntity="Insurance" syncable="YES"/>
+        <relationship name="vehicle" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Vehicle" inverseName="personal" inverseEntity="Vehicle" syncable="YES"/>
     </entity>
-    <entity name="User" syncable="YES"/>
-    <entity name="Vehicle" syncable="YES">
-        <attribute name="brand" optional="YES" attributeType="String" syncable="YES"/>
+    <entity name="Vehicle" representedClassName="Vehicle" syncable="YES">
+        <attribute name="brand" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="chassisNumber" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="engineNumber" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="policeNumber" optional="YES" attributeType="String" syncable="YES"/>
@@ -31,10 +30,8 @@
         <relationship name="personal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Personal" inverseName="vehicle" inverseEntity="Personal" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Personal" positionX="-63" positionY="-18" width="128" height="163"/>
-        <element name="Vehicle" positionX="-245" positionY="180" width="128" height="163"/>
-        <element name="User" positionX="79" positionY="-99" width="128" height="45"/>
         <element name="Insurance" positionX="16" positionY="218" width="128" height="133"/>
-        <element name="Entity" positionX="-45" positionY="144" width="128" height="45"/>
+        <element name="Personal" positionX="-63" positionY="0" width="128" height="178"/>
+        <element name="Vehicle" positionX="-245" positionY="180" width="128" height="163"/>
     </elements>
 </model>

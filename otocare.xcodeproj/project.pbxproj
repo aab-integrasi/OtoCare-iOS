@@ -77,6 +77,21 @@
 		B294C79C1997CD18003FE0AC /* AABVehicleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C79B1997CD18003FE0AC /* AABVehicleViewController.m */; };
 		B294C79F1997CD40003FE0AC /* AABInsuranceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C79E1997CD40003FE0AC /* AABInsuranceViewController.m */; };
 		B294C7A21997DD5E003FE0AC /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B294C7A01997DD5E003FE0AC /* Model.xcdatamodeld */; };
+		B294C7B519989094003FE0AC /* Personal+Extended.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7B419989094003FE0AC /* Personal+Extended.m */; };
+		B294C7B8199890C7003FE0AC /* Personal+Export.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7B7199890C7003FE0AC /* Personal+Export.m */; };
+		B294C7BB19989318003FE0AC /* AABDBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7BA19989318003FE0AC /* AABDBManager.m */; };
+		B294C7BE199895C6003FE0AC /* AABBackgroundFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7BD199895C6003FE0AC /* AABBackgroundFetcher.m */; };
+		B294C7C119989684003FE0AC /* AABDataFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7C019989684003FE0AC /* AABDataFetcher.m */; };
+		B294C7C419989EF6003FE0AC /* Vehicle+Extended.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7C319989EF6003FE0AC /* Vehicle+Extended.m */; };
+		B294C7C719989F10003FE0AC /* Insurance+Extended.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7C619989F10003FE0AC /* Insurance+Extended.m */; };
+		B294C7D31999A4EA003FE0AC /* Insurance.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7D21999A4EA003FE0AC /* Insurance.m */; };
+		B294C7D61999A4EB003FE0AC /* Vehicle.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7D51999A4EB003FE0AC /* Vehicle.m */; };
+		B294C7D91999A4EB003FE0AC /* Personal.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7D81999A4EB003FE0AC /* Personal.m */; };
+		B294C7DC1999AFC0003FE0AC /* Personal+Import.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7DB1999AFC0003FE0AC /* Personal+Import.m */; };
+		B294C7DF1999BE68003FE0AC /* Insurance+Import.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7DE1999BE68003FE0AC /* Insurance+Import.m */; };
+		B294C7E21999BE80003FE0AC /* Vehicle+Import.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7E11999BE80003FE0AC /* Vehicle+Import.m */; };
+		B294C7E51999DE7C003FE0AC /* Vehicle+Export.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7E41999DE7C003FE0AC /* Vehicle+Export.m */; };
+		B294C7E81999DE91003FE0AC /* Insurance+Export.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7E71999DE91003FE0AC /* Insurance+Export.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -214,6 +229,36 @@
 		B294C79D1997CD40003FE0AC /* AABInsuranceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AABInsuranceViewController.h; sourceTree = "<group>"; };
 		B294C79E1997CD40003FE0AC /* AABInsuranceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AABInsuranceViewController.m; sourceTree = "<group>"; };
 		B294C7A11997DD5E003FE0AC /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		B294C7B319989094003FE0AC /* Personal+Extended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Personal+Extended.h"; sourceTree = "<group>"; };
+		B294C7B419989094003FE0AC /* Personal+Extended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Personal+Extended.m"; sourceTree = "<group>"; };
+		B294C7B6199890C7003FE0AC /* Personal+Export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Personal+Export.h"; sourceTree = "<group>"; };
+		B294C7B7199890C7003FE0AC /* Personal+Export.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Personal+Export.m"; sourceTree = "<group>"; };
+		B294C7B919989318003FE0AC /* AABDBManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AABDBManager.h; sourceTree = "<group>"; };
+		B294C7BA19989318003FE0AC /* AABDBManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AABDBManager.m; sourceTree = "<group>"; };
+		B294C7BC199895C6003FE0AC /* AABBackgroundFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AABBackgroundFetcher.h; sourceTree = "<group>"; };
+		B294C7BD199895C6003FE0AC /* AABBackgroundFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AABBackgroundFetcher.m; sourceTree = "<group>"; };
+		B294C7BF19989684003FE0AC /* AABDataFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AABDataFetcher.h; sourceTree = "<group>"; };
+		B294C7C019989684003FE0AC /* AABDataFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AABDataFetcher.m; sourceTree = "<group>"; };
+		B294C7C219989EF6003FE0AC /* Vehicle+Extended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Vehicle+Extended.h"; sourceTree = "<group>"; };
+		B294C7C319989EF6003FE0AC /* Vehicle+Extended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Vehicle+Extended.m"; sourceTree = "<group>"; };
+		B294C7C519989F10003FE0AC /* Insurance+Extended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Insurance+Extended.h"; sourceTree = "<group>"; };
+		B294C7C619989F10003FE0AC /* Insurance+Extended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Insurance+Extended.m"; sourceTree = "<group>"; };
+		B294C7D11999A4EA003FE0AC /* Insurance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Insurance.h; sourceTree = "<group>"; };
+		B294C7D21999A4EA003FE0AC /* Insurance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Insurance.m; sourceTree = "<group>"; };
+		B294C7D41999A4EB003FE0AC /* Vehicle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vehicle.h; sourceTree = "<group>"; };
+		B294C7D51999A4EB003FE0AC /* Vehicle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Vehicle.m; sourceTree = "<group>"; };
+		B294C7D71999A4EB003FE0AC /* Personal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Personal.h; sourceTree = "<group>"; };
+		B294C7D81999A4EB003FE0AC /* Personal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Personal.m; sourceTree = "<group>"; };
+		B294C7DA1999AFC0003FE0AC /* Personal+Import.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Personal+Import.h"; sourceTree = "<group>"; };
+		B294C7DB1999AFC0003FE0AC /* Personal+Import.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Personal+Import.m"; sourceTree = "<group>"; };
+		B294C7DD1999BE68003FE0AC /* Insurance+Import.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Insurance+Import.h"; sourceTree = "<group>"; };
+		B294C7DE1999BE68003FE0AC /* Insurance+Import.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Insurance+Import.m"; sourceTree = "<group>"; };
+		B294C7E01999BE80003FE0AC /* Vehicle+Import.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Vehicle+Import.h"; sourceTree = "<group>"; };
+		B294C7E11999BE80003FE0AC /* Vehicle+Import.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Vehicle+Import.m"; sourceTree = "<group>"; };
+		B294C7E31999DE7C003FE0AC /* Vehicle+Export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Vehicle+Export.h"; sourceTree = "<group>"; };
+		B294C7E41999DE7C003FE0AC /* Vehicle+Export.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Vehicle+Export.m"; sourceTree = "<group>"; };
+		B294C7E61999DE91003FE0AC /* Insurance+Export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Insurance+Export.h"; sourceTree = "<group>"; };
+		B294C7E71999DE91003FE0AC /* Insurance+Export.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Insurance+Export.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -420,6 +465,10 @@
 		B294C6B019907D1B003FE0AC /* Data Fetcher */ = {
 			isa = PBXGroup;
 			children = (
+				B294C7BC199895C6003FE0AC /* AABBackgroundFetcher.h */,
+				B294C7BD199895C6003FE0AC /* AABBackgroundFetcher.m */,
+				B294C7BF19989684003FE0AC /* AABDataFetcher.h */,
+				B294C7C019989684003FE0AC /* AABDataFetcher.m */,
 			);
 			name = "Data Fetcher";
 			sourceTree = "<group>";
@@ -436,6 +485,8 @@
 			children = (
 				B294C75319908524003FE0AC /* AABAuthManager.h */,
 				B294C75419908524003FE0AC /* AABAuthManager.m */,
+				B294C7B919989318003FE0AC /* AABDBManager.h */,
+				B294C7BA19989318003FE0AC /* AABDBManager.m */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -546,6 +597,9 @@
 		B294C75619908590003FE0AC /* Core Data */ = {
 			isa = PBXGroup;
 			children = (
+				B294C7B21998906F003FE0AC /* extended */,
+				B294C7AE199859ED003FE0AC /* import */,
+				B294C7AD199859E2003FE0AC /* export */,
 				B294C7A319984D00003FE0AC /* Generated Classses */,
 				B294C757199085B9003FE0AC /* AABUser.h */,
 				B294C758199085B9003FE0AC /* AABUser.m */,
@@ -603,8 +657,53 @@
 		B294C7A319984D00003FE0AC /* Generated Classses */ = {
 			isa = PBXGroup;
 			children = (
+				B294C7D71999A4EB003FE0AC /* Personal.h */,
+				B294C7D81999A4EB003FE0AC /* Personal.m */,
+				B294C7D41999A4EB003FE0AC /* Vehicle.h */,
+				B294C7D51999A4EB003FE0AC /* Vehicle.m */,
+				B294C7D11999A4EA003FE0AC /* Insurance.h */,
+				B294C7D21999A4EA003FE0AC /* Insurance.m */,
 			);
 			name = "Generated Classses";
+			sourceTree = "<group>";
+		};
+		B294C7AD199859E2003FE0AC /* export */ = {
+			isa = PBXGroup;
+			children = (
+				B294C7B6199890C7003FE0AC /* Personal+Export.h */,
+				B294C7B7199890C7003FE0AC /* Personal+Export.m */,
+				B294C7E31999DE7C003FE0AC /* Vehicle+Export.h */,
+				B294C7E41999DE7C003FE0AC /* Vehicle+Export.m */,
+				B294C7E61999DE91003FE0AC /* Insurance+Export.h */,
+				B294C7E71999DE91003FE0AC /* Insurance+Export.m */,
+			);
+			name = export;
+			sourceTree = "<group>";
+		};
+		B294C7AE199859ED003FE0AC /* import */ = {
+			isa = PBXGroup;
+			children = (
+				B294C7DA1999AFC0003FE0AC /* Personal+Import.h */,
+				B294C7DB1999AFC0003FE0AC /* Personal+Import.m */,
+				B294C7DD1999BE68003FE0AC /* Insurance+Import.h */,
+				B294C7DE1999BE68003FE0AC /* Insurance+Import.m */,
+				B294C7E01999BE80003FE0AC /* Vehicle+Import.h */,
+				B294C7E11999BE80003FE0AC /* Vehicle+Import.m */,
+			);
+			name = import;
+			sourceTree = "<group>";
+		};
+		B294C7B21998906F003FE0AC /* extended */ = {
+			isa = PBXGroup;
+			children = (
+				B294C7B319989094003FE0AC /* Personal+Extended.h */,
+				B294C7B419989094003FE0AC /* Personal+Extended.m */,
+				B294C7C219989EF6003FE0AC /* Vehicle+Extended.h */,
+				B294C7C319989EF6003FE0AC /* Vehicle+Extended.m */,
+				B294C7C519989F10003FE0AC /* Insurance+Extended.h */,
+				B294C7C619989F10003FE0AC /* Insurance+Extended.m */,
+			);
+			name = extended;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -723,14 +822,18 @@
 				B294C79F1997CD40003FE0AC /* AABInsuranceViewController.m in Sources */,
 				B294C782199457B8003FE0AC /* UIFont+IMMS.m in Sources */,
 				B294C697198F8764003FE0AC /* AABHomePartThree.m in Sources */,
+				B294C7C419989EF6003FE0AC /* Vehicle+Extended.m in Sources */,
+				B294C7B519989094003FE0AC /* Personal+Extended.m in Sources */,
 				B294C79619955245003FE0AC /* AABViewController.m in Sources */,
 				B294C75F19908A2D003FE0AC /* AABGPlacesFetcher.m in Sources */,
 				B294C790199549DF003FE0AC /* AABTableHeaderView.m in Sources */,
+				B294C7E21999BE80003FE0AC /* Vehicle+Import.m in Sources */,
 				B294C72919907EE9003FE0AC /* AFHTTPClient.m in Sources */,
 				B294C759199085B9003FE0AC /* AABUser.m in Sources */,
 				B294C72E19907EE9003FE0AC /* AFPropertyListRequestOperation.m in Sources */,
 				B274BD96198F7738001FBFDC /* AABFirstViewController.m in Sources */,
 				B294C75519908524003FE0AC /* AABAuthManager.m in Sources */,
+				B294C7DF1999BE68003FE0AC /* Insurance+Import.m in Sources */,
 				B294C78D199547DB003FE0AC /* AABTableViewController.m in Sources */,
 				B294C74D19907EE9003FE0AC /* PDKeychainBindingsController.m in Sources */,
 				B294C73119907EE9003FE0AC /* UIImageView+AFNetworking.m in Sources */,
@@ -738,23 +841,34 @@
 				B294C6A8199079FC003FE0AC /* AABKnowledgeViewController.m in Sources */,
 				B294C79C1997CD18003FE0AC /* AABVehicleViewController.m in Sources */,
 				B294C72D19907EE9003FE0AC /* AFNetworkActivityIndicatorManager.m in Sources */,
+				B294C7D61999A4EB003FE0AC /* Vehicle.m in Sources */,
 				B294C72B19907EE9003FE0AC /* AFImageRequestOperation.m in Sources */,
 				B294C6AB19907A0B003FE0AC /* AABNearMeViewController.m in Sources */,
 				B294C73019907EE9003FE0AC /* AFXMLRequestOperation.m in Sources */,
 				B294C74C19907EE9003FE0AC /* PDKeychainBindings.m in Sources */,
+				B294C7BB19989318003FE0AC /* AABDBManager.m in Sources */,
 				B274BDB9198F8183001FBFDC /* AABHomePartOne.m in Sources */,
 				B294C77C19945723003FE0AC /* MBProgressHUD.m in Sources */,
 				B294C75C19908972003FE0AC /* AABGPlace.m in Sources */,
+				B294C7D31999A4EA003FE0AC /* Insurance.m in Sources */,
 				B274BD90198F7738001FBFDC /* AABAppDelegate.m in Sources */,
 				B294C77A19945723003FE0AC /* IMFormCell.m in Sources */,
 				B294C76419931BE5003FE0AC /* Reachability.m in Sources */,
+				B294C7DC1999AFC0003FE0AC /* Personal+Import.m in Sources */,
+				B294C7C119989684003FE0AC /* AABDataFetcher.m in Sources */,
 				B294C7881994BAED003FE0AC /* AABProfileTableViewController.m in Sources */,
 				B294C74A19907EE9003FE0AC /* NSString+Encryption.m in Sources */,
+				B294C7D91999A4EB003FE0AC /* Personal.m in Sources */,
+				B294C7BE199895C6003FE0AC /* AABBackgroundFetcher.m in Sources */,
 				B294C6A1199079B3003FE0AC /* AABHomeViewController.m in Sources */,
 				B294C74E19907EE9003FE0AC /* UIImage+ImageEffects.m in Sources */,
 				B294C74F19907EE9003FE0AC /* UIImage+ImageUtils.m in Sources */,
+				B294C7C719989F10003FE0AC /* Insurance+Extended.m in Sources */,
+				B294C7E81999DE91003FE0AC /* Insurance+Export.m in Sources */,
+				B294C7B8199890C7003FE0AC /* Personal+Export.m in Sources */,
 				B294C74B19907EE9003FE0AC /* NSString+NamingConvention.m in Sources */,
 				B294C72A19907EE9003FE0AC /* AFHTTPRequestOperation.m in Sources */,
+				B294C7E51999DE7C003FE0AC /* Vehicle+Export.m in Sources */,
 				B294C75219907FBA003FE0AC /* AABConstants.m in Sources */,
 				B294C77B19945723003FE0AC /* IMSSCheckMark.m in Sources */,
 				B294C72C19907EE9003FE0AC /* AFJSONRequestOperation.m in Sources */,

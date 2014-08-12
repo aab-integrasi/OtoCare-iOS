@@ -10,6 +10,9 @@
 #import "AABTableHeaderView.h"
 #import "AABFormCell.h"
 #import "AABDatePickerVC.h"
+#import "Personal.h"
+#import "Personal+Extended.h"
+#import "AABDBManager.h"
 
 
 #define kPickerAnimationDuration    0.40   // duration for the animation to slide the date picker into view
@@ -29,11 +32,12 @@ static NSString *kCellAddress = @"cellAddress";     // the remaining cells at th
 static NSString *kCell = @"cell";     // the remaining cells at the end
 
 
-@interface AABProfileTableViewController ()
+@interface AABProfileTableViewController ()<UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UIDatePicker *pickerView;
 
 @property (nonatomic, strong) NSArray *dataArray;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
+
 
 // keep track which indexPath points to the cell with UIDatePicker
 @property (nonatomic, strong) NSIndexPath *datePickerIndexPath;
@@ -52,11 +56,19 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     }
     return self;
 }
+// - (void)setPersonal:(Personal *)personal
+//{
+//    if (personal) {
+//        //deep copy
+//        _personal = personal;
+//    }
+//}
 
-- (BOOL) validate {
+- (IBAction)cancel:(id)sender {
     
-    return YES;
+        [self dismissViewControllerAnimated:YES completion:nil];
 }
+
 
 - (void)viewDidLoad
 {
@@ -96,6 +108,32 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                                              selector:@selector(localeChanged:)
                                                  name:NSCurrentLocaleDidChangeNotification
                                                object:nil];
+    
+    //check from database
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Personal"];
+    request.returnsObjectsAsFaults = YES;
+
+     NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+    // Generate data
+    NSError *error;
+    NSArray * result = [context executeFetchRequest:request error:&error];
+    if (error){
+        NSLog(@"Error Loading Data : %@",[error description]);
+    }
+    
+    if (![result count]) {
+        //case there is no data on database
+        //create new personal information
+        if (!self.personal) {
+            //create new personal
+            self.personal = [Personal newPersonalInContext:context];
+        }
+    }else {
+        //get data from database
+        self.personal = [result lastObject];
+    }
+    
+    
     
 }
 
@@ -281,6 +319,14 @@ NSUInteger DeviceSystemMajorVersion()
     
     // update the cell's date string
     cell.detailTextLabel.text = [self.dateFormatter stringFromDate:targetedDatePicker.date];
+    
+  //save to database
+    if (targetedCellIndexPath.row == kDateBirthRow) {
+        self.personal.dateOfBirth = targetedDatePicker.date;
+    }else if (targetedCellIndexPath.row == kDateSIMRow){
+        self.personal.simExpiredDate = targetedDatePicker.date;
+    }
+    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -325,6 +371,7 @@ NSUInteger DeviceSystemMajorVersion()
         cell.textLabel.text = [itemData valueForKey:kTitleKey];
         cell.detailTextLabel.text = [self.dateFormatter stringFromDate:[itemData valueForKey:kDateKey]];
 
+
         return cell;
     }else if(indexPath.row == kAddressRow){
      //cell address
@@ -339,9 +386,9 @@ NSUInteger DeviceSystemMajorVersion()
                 cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
                 cell.labelTitle.text = @"Name";
                 cell.textValue.placeholder = @"e.g Jafar";
-//                cell.textValue.text = self.registration.bioData.firstName;
+                cell.textValue.text = self.personal.name;
                 cell.onTextValueReturn = ^(NSString *value){
-//                    self.registration.bioData.firstName = value;
+                    self.personal.name = value;
                 };
                 cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
                 cell.maxCharCount = 40;
@@ -349,31 +396,31 @@ NSUInteger DeviceSystemMajorVersion()
                 cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
                 cell.labelTitle.text = @"email";
                 cell.textValue.placeholder = @"e.g xxx@gmail.com";
-                //            cell.textValue.text = self.registration.bioData.firstName;
+                cell.textValue.text = self.personal.email;
                 cell.onTextValueReturn = ^(NSString *value){
-                    //                self.registration.bioData.firstName = value;
+                                   self.personal.email = value;
                 };
-                cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
+                cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet],[NSCharacterSet characterSetWithCharactersInString:@".@"]];
                 cell.maxCharCount = 20;
             }else if (indexPath.row == 2) {
                 cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
-                cell.labelTitle.text = @"Telephone Number";
+                cell.labelTitle.text = @"Telephone";
                 cell.textValue.placeholder = @"e.g 081122334455";
-//                cell.textValue.text = self.registration.unhcrNumber;
+                cell.textValue.text = self.personal.telephone;
                cell.onTextValueReturn = ^(NSString *value){
-    
+                   self.personal.telephone = value;
                 };
-                cell.characterSets = @[[NSCharacterSet characterSetWithCharactersInString:@"0123456789"]];
+                cell.characterSets = @[[NSCharacterSet characterSetWithCharactersInString:@"+0123456789"]];
                 cell.maxCharCount = 15;
             }else if (indexPath.row == 3) {
                 cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
-                cell.labelTitle.text = @"Home Address";
+                cell.labelTitle.text = @"Address";
                 cell.textValue.placeholder = @"Jl. Kacang,Setiabudi";
-                //            cell.textValue.text = self.registration.bioData.firstName;
+                            cell.textValue.text = self.personal.address;
                 cell.onTextValueReturn = ^(NSString *value){
-                    //                self.registration.bioData.firstName = value;
+                                    self.personal.address = value;
                 };
-                cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
+                cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet],[NSCharacterSet characterSetWithCharactersInString:@".-/"]];
                 cell.maxCharCount = 200;
             }
         }
@@ -542,6 +589,112 @@ NSUInteger DeviceSystemMajorVersion()
 {
     return ([self indexPathHasPicker:indexPath] ? self.pickerCellRowHeight : self.tableView.rowHeight);
 }
+
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+    
+    if ([identifier isEqualToString:@"ShowVehicle"]) {
+        if (![self validate])  {
+            //show alert that some data must be filled before next step
+//            NSString * message = @"Please fill ";
+            NSString *message = [[NSString alloc] init];
+//            message = @"Please fill ";
+            [message stringByAppendingString:@"Please fill "];
+
+            message = [NSString stringWithFormat:@"%@",@"Please fill "];
+            
+            if (!self.personal.name) {
+                [message stringByAppendingString:@"Name"];
+            }
+            
+            if (!self.personal.email) {
+                
+                [message stringByAppendingString:message?@",Email":@"Email"];
+            }
+            
+            if (!self.personal.address) {
+                [message stringByAppendingString:message?@",Address":@"Address"];
+            }
+            
+            if (!self.personal.telephone) {
+                [message stringByAppendingString:message?@",Telephone":@"Telephone"];
+            }
+            
+            if (!self.personal.dateOfBirth) {
+                [message stringByAppendingString:message?@",Date of birth":@"Date of Birth"];
+            }
+            
+            if (!self.personal.simExpiredDate) {
+                [message stringByAppendingString:message?@",SIM expired date":@"SIM expired date"];
+            }
+            
+            [message stringByAppendingString:@" value"];
+            //show message
+            [self showAlertWithTitle:@"Invalid input" message:message];
+            
+            NSLog(@"message : %@",message);
+            message = Nil;
+            return NO;
+        }
+        
+    }
+    return YES;
+    
+}
+    
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@"ShowVehicle"]) {
+        if ([self validate]) {
+            //case data alreay fill correctly
+            [[segue destinationViewController] setDelegate:self];
+                    [[segue destinationViewController] setPersonal:self.personal];
+        }else {
+            //show alert that some data must be filled before next step
+            NSString * message = @"Please fill ";
+            if (!self.personal.name) {
+                [message stringByAppendingString:@"Name"];
+            }
+            
+            if (!self.personal.email) {
+                
+                [message stringByAppendingString:message?@",Email":@"Email"];
+            }
+            
+            if (!self.personal.address) {
+                [message stringByAppendingString:message?@",Address":@"Address"];
+            }
+            
+            if (!self.personal.telephone) {
+                [message stringByAppendingString:message?@",Telephone":@"Telephone"];
+            }
+            
+            if (!self.personal.dateOfBirth) {
+                [message stringByAppendingString:message?@",Date of birth":@"Date of Birth"];
+            }
+            
+            if (!self.personal.simExpiredDate) {
+                [message stringByAppendingString:message?@",SIM expired date":@"SIM expired date"];
+            }
+            
+            [message stringByAppendingString:@" value"];
+            //show message
+            [self showAlertWithTitle:@"Invalid input" message:message];
+        }
+        
+    }
+}
+
+- (BOOL) validate {
+    NSLog(@"name : %@, address : %@, tlp : %@, email : %@, dateOfBirth : %@, simExpired : %@",self.personal.name,self.personal.address,self.personal.telephone,self.personal.email,self.personal.dateOfBirth,self.personal.simExpiredDate);
+    BOOL value = NO;
+    value = self.personal.name != Nil;
+    value &= self.personal.address && self.personal.email && self.personal.telephone && self.personal.dateOfBirth && self.personal.simExpiredDate;
+    
+    return value;
+}
+
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath

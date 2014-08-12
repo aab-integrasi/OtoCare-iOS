@@ -7,7 +7,21 @@
 //
 
 #import "AABTableViewController.h"
+#import "Vehicle.h"
+#import "Personal.h"
+#import "AABInsuranceViewController.h"
 
-@interface AABVehicleViewController : AABTableViewController
+@protocol AABVehicleViewControllerDelegate;
+
+
+@interface AABVehicleViewController : AABTableViewController<AABInsuranceViewControllerDelegate>
+
+@property (nonatomic, strong) Vehicle *vehicle;
+@property (nonatomic, strong) Personal *personal;
+@property (weak, atomic) id<AABVehicleViewControllerDelegate> delegate;
+@end
+
+
+@protocol AABVehicleViewControllerDelegate <NSObject>
 
 @end
