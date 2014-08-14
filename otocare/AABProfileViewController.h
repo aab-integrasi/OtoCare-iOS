@@ -11,9 +11,10 @@
 
 @interface AABProfileViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *submitButton;
-@property (weak, nonatomic) IBOutlet UITextField *policeNumber;
+@property (weak, nonatomic) IBOutlet UITextField *engineNumber;
 @property (weak, nonatomic) IBOutlet UITextField *chassisNumber;
 @property (weak, nonatomic) IBOutlet UISwitch *isNotCustomer;
 @property (nonatomic, strong) Personal *personal;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollViewController;
 
 @end

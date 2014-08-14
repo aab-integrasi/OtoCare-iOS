@@ -15,6 +15,7 @@
 #import "AABDBManager.h"
 
 
+
 #define kPickerAnimationDuration    0.40   // duration for the animation to slide the date picker into view
 #define kDatePickerTag              99     // view tag identifiying the date picker view
 
@@ -48,6 +49,10 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 
 @implementation AABProfileTableViewController
 
+- (void)setAllowEditing:(BOOL)allowEditing
+{
+    _allowEditing = allowEditing;
+}
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
@@ -85,13 +90,10 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     NSMutableDictionary *email = [@{ kTitleKey : @"email" } mutableCopy];
     NSMutableDictionary *tlp = [@{ kTitleKey : @"Telephone" } mutableCopy];
     NSMutableDictionary *address = [@{ kTitleKey : @"Address" } mutableCopy];
-    NSMutableDictionary *birth = [@{ kTitleKey : @"Date of birth",
-                                       kDateKey : [NSDate date] } mutableCopy];
-    NSMutableDictionary *sim = [@{ kTitleKey : @"SIM expired date",
-                                         kDateKey : [NSDate date] } mutableCopy];
+    NSMutableDictionary *birth = Nil;
+    NSMutableDictionary *sim = Nil;
     
-    
-    self.dataArray = @[name,email,tlp,address,birth,sim];
+
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateStyle:NSDateFormatterShortStyle];    // show short-style date format
@@ -131,9 +133,32 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     }else {
         //get data from database
         self.personal = [result lastObject];
+        
+        if (self.personal) {
+            //set from database
+            if (self.personal.dateOfBirth) {
+                birth = [@{ kTitleKey : @"Date of birth",
+                            kDateKey : self.personal.dateOfBirth } mutableCopy];
+            }
+            
+            if (self.personal.simExpiredDate) {
+                sim = [@{ kTitleKey : @"SIM expired date",
+                          kDateKey : self.personal.simExpiredDate } mutableCopy];
+            }
+            
+        }
     }
     
+    if (!birth) {
+        birth = [@{ kTitleKey : @"Date of birth",
+                    kDateKey : [NSDate date] } mutableCopy];
+    }
     
+    if (!sim) {
+        sim = [@{ kTitleKey : @"SIM expired date",
+                  kDateKey : [NSDate date] } mutableCopy];
+    }
+        self.dataArray = @[name,email,tlp,address,birth,sim];
     
 }
 
@@ -398,7 +423,9 @@ NSUInteger DeviceSystemMajorVersion()
                 cell.textValue.placeholder = @"e.g xxx@gmail.com";
                 cell.textValue.text = self.personal.email;
                 cell.onTextValueReturn = ^(NSString *value){
-                                   self.personal.email = value;
+                    if([self validateEmail:value]){
+                        self.personal.email = value;
+                    }
                 };
                 cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet],[NSCharacterSet characterSetWithCharactersInString:@".@"]];
                 cell.maxCharCount = 20;
@@ -408,11 +435,15 @@ NSUInteger DeviceSystemMajorVersion()
                 cell.textValue.placeholder = @"e.g 081122334455";
                 cell.textValue.text = self.personal.telephone;
                cell.onTextValueReturn = ^(NSString *value){
+                   
                    self.personal.telephone = value;
+                   
                 };
                 cell.characterSets = @[[NSCharacterSet characterSetWithCharactersInString:@"+0123456789"]];
                 cell.maxCharCount = 15;
+                
             }else if (indexPath.row == 3) {
+                NSLog(@"cellID : %@",cellIdentifier);
                 cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
                 cell.labelTitle.text = @"Address";
                 cell.textValue.placeholder = @"Jl. Kacang,Setiabudi";
@@ -462,6 +493,10 @@ NSUInteger DeviceSystemMajorVersion()
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (!self.allowEditing){
+        //disable editing
+        return;
+    }
      UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
      if (cell.reuseIdentifier == kDateCellID)
      {
@@ -590,6 +625,12 @@ NSUInteger DeviceSystemMajorVersion()
     return ([self indexPathHasPicker:indexPath] ? self.pickerCellRowHeight : self.tableView.rowHeight);
 }
 
+- (BOOL)validateEmail:(NSString *)emailStr {
+    NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
+    return [emailTest evaluateWithObject:emailStr];
+}
+
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
     
@@ -599,42 +640,70 @@ NSUInteger DeviceSystemMajorVersion()
 //            NSString * message = @"Please fill ";
             NSString *message = [[NSString alloc] init];
 //            message = @"Please fill ";
-            [message stringByAppendingString:@"Please fill "];
 
-            message = [NSString stringWithFormat:@"%@",@"Please fill "];
-            
-            if (!self.personal.name) {
-                [message stringByAppendingString:@"Name"];
-            }
-            
-            if (!self.personal.email) {
+
+            if([self.personal.name isEqualToString:@""] || !self.personal.name) {
+                 message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Name"];
+                //show message
+                [self showAlertWithTitle:@"Invalid input" message:message];
                 
-                [message stringByAppendingString:message?@",Email":@"Email"];
+                NSLog(@"message : %@",message);
+                message = Nil;
+                return NO;
+            }
+            if([self.personal.email isEqualToString:@""] || !self.personal.email) {
+                   message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Email"];
+                //show message
+                [self showAlertWithTitle:@"Invalid input" message:message];
+                
+                NSLog(@"message : %@",message);
+                message = Nil;
+                return NO;
+            }
+            if([self.personal.telephone isEqualToString:@""] || !self.personal.telephone) {
+                  message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Telephone"];
+                //show message
+                [self showAlertWithTitle:@"Invalid input" message:message];
+                
+                NSLog(@"message : %@",message);
+                message = Nil;
+                return NO;
+            }
+            if([self.personal.address isEqualToString:@""] || !self.personal.address) {
+                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Address"];
+                //show message
+                [self showAlertWithTitle:@"Invalid input" message:message];
+                
+                NSLog(@"message : %@",message);
+                message = Nil;
+                return NO;
             }
             
-            if (!self.personal.address) {
-                [message stringByAppendingString:message?@",Address":@"Address"];
+            if(!self.personal.dateOfBirth) {
+                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Date of Birth"];
+                //show message
+                [self showAlertWithTitle:@"Invalid input" message:message];
+                
+                NSLog(@"message : %@",message);
+                message = Nil;
+                return NO;
+            }
+            if(!self.personal.simExpiredDate) {
+                      message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"SIM expired date"];
+                //show message
+                [self showAlertWithTitle:@"Invalid input" message:message];
+                
+                NSLog(@"message : %@",message);
+                message = Nil;
+                return NO;
+            }
+           //last check for telephone number
+            if(self.personal.telephone.length < 10){
+                [self showAlertWithTitle:@"Invalid input" message:@"Telephone number must be filled by minimum 10 characters"];
+                return NO;
             }
             
-            if (!self.personal.telephone) {
-                [message stringByAppendingString:message?@",Telephone":@"Telephone"];
-            }
-            
-            if (!self.personal.dateOfBirth) {
-                [message stringByAppendingString:message?@",Date of birth":@"Date of Birth"];
-            }
-            
-            if (!self.personal.simExpiredDate) {
-                [message stringByAppendingString:message?@",SIM expired date":@"SIM expired date"];
-            }
-            
-            [message stringByAppendingString:@" value"];
-            //show message
-            [self showAlertWithTitle:@"Invalid input" message:message];
-            
-            NSLog(@"message : %@",message);
-            message = Nil;
-            return NO;
+           
         }
         
     }
@@ -689,10 +758,18 @@ NSUInteger DeviceSystemMajorVersion()
 - (BOOL) validate {
     NSLog(@"name : %@, address : %@, tlp : %@, email : %@, dateOfBirth : %@, simExpired : %@",self.personal.name,self.personal.address,self.personal.telephone,self.personal.email,self.personal.dateOfBirth,self.personal.simExpiredDate);
     BOOL value = NO;
-    value = self.personal.name != Nil;
-    value &= self.personal.address && self.personal.email && self.personal.telephone && self.personal.dateOfBirth && self.personal.simExpiredDate;
     
-    return value;
+    if([self.personal.name isEqualToString:@""] || !self.personal.name) return value;
+    if([self.personal.email isEqualToString:@""] || !self.personal.email) return value;
+    if([self.personal.telephone isEqualToString:@""] || !self.personal.telephone) return value;
+    if(!self.personal.dateOfBirth) return value;
+    if(!self.personal.simExpiredDate) return value;
+    if([self.personal.address isEqualToString:@""] || !self.personal.address) return value;
+
+//    value =  != Nil;
+//    value &= self.personal.address && self.personal.email && self.personal.telephone && self.personal.dateOfBirth && self.personal.simExpiredDate;
+    
+    return YES;
 }
 
 /*

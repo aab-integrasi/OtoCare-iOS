@@ -11,13 +11,15 @@
 #import "Personal.h"
 #import "AABVehicleViewController.h"
 
-
+@class Personal;
 @protocol AABProfileTableViewControllerDelegate;
 
 @interface AABProfileTableViewController : AABTableViewController <AABVehicleViewControllerDelegate>
 
 @property (nonatomic, strong) Personal *personal;
+@property (nonatomic) BOOL allowEditing;
 @property (weak, atomic) id<AABProfileTableViewControllerDelegate> delegate;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *nextButton;
 
 @end
 

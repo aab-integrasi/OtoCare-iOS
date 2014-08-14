@@ -62,18 +62,55 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         //show alert that some data must be filled before next step
         //            NSString * message = @"Please fill ";
         NSString *message = [[NSString alloc] init];
-        //            message = @"Please fill ";
-        [message stringByAppendingString:@"Please fill "];
+        if(!self.insurance.policyNumber || [self.insurance.policyNumber isEqualToString:@""]) {
+             message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Policy Number"];
+            //show message
+            [self showAlertWithTitle:@"Invalid input" message:message];
+            
+            NSLog(@"message : %@",message);
+            message = Nil;
+            return;
+        }
+        if(!self.insurance.name || [self.insurance.name isEqualToString:@""]) {
+             message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Insurance name"];
+            //show message
+            [self showAlertWithTitle:@"Invalid input" message:message];
+            
+            NSLog(@"message : %@",message);
+            message = Nil;
+            return;
+        }
+       
+        if(!self.insurance.policyPeriodFrom) {
+             message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Policy period from"];
+            //show message
+            [self showAlertWithTitle:@"Invalid input" message:message];
+            
+            NSLog(@"message : %@",message);
+            message = Nil;
+            return;
+        }
+        if(!self.insurance.policyPeriodTo) {
+             message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Policy period to"];
+            //show message
+            [self showAlertWithTitle:@"Invalid input" message:message];
+            
+            NSLog(@"message : %@",message);
+            message = Nil;
+            return;
+        }
         
-        message = [NSString stringWithFormat:@"%@",@"Please fill "];
+        if(!self.insurance.coverage || [self.insurance.coverage isEqualToString:@""]) {
+            message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Coverage"];
+            //show message
+            [self showAlertWithTitle:@"Invalid input" message:message];
+            
+            NSLog(@"message : %@",message);
+            message = Nil;
+            return;
+            
+        }
         
-        
-        [message stringByAppendingString:@" value"];
-        //show message
-        [self showAlertWithTitle:@"Invalid input" message:message];
-        
-        NSLog(@"message : %@",message);
-        message = Nil;
 //        return NO;
     }else {
         
@@ -91,7 +128,9 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         [self.personal.managedObjectContext save:&error];
         if (error) {
             NSLog(@"Error while saving to database : %@", [error description]);
+             [self showAlertWithTitle:@"Failed Saving Database" message:nil];
         }else{
+            [self showAlertWithTitle:@"Success Saving Database" message:nil];
         //save database success
         [[NSNotificationCenter defaultCenter] postNotificationName:AABDatabaseChangedNotification object:nil];
             //close view controller
@@ -123,13 +162,8 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     NSMutableDictionary *policyNumber = [@{ kTitleKey : @"Policy Number" } mutableCopy];
     NSMutableDictionary *insuranceName = [@{ kTitleKey : @"Insurance Name" } mutableCopy];
     NSMutableDictionary *coverage = [@{ kTitleKey : @"Coverage" } mutableCopy];
-    NSMutableDictionary *periodFrom = [@{ kTitleKey : @"Policy period from",
-                                     kDateKey : [NSDate date] } mutableCopy];
-    NSMutableDictionary *periodTo = [@{ kTitleKey : @"Policy period to",
-                                   kDateKey : [NSDate date] } mutableCopy];
-    
-    
-    self.dataArray = @[policyNumber,insuranceName,periodFrom,periodTo,coverage];
+    NSMutableDictionary *periodFrom = Nil;
+    NSMutableDictionary *periodTo = Nil;
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateStyle:NSDateFormatterShortStyle];    // show short-style date format
@@ -147,16 +181,58 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                                                  name:NSCurrentLocaleDidChangeNotification
                                                object:nil];
     
-    //create new vehicle object
+    //create new insurance object
     if (!self.insurance) {
-        //create vehicle
-        NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+            //check from database
+            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Insurance"];
+            request.returnsObjectsAsFaults = YES;
+            
+            NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+            // Generate data
+            NSError *error;
+            NSArray * result = [context executeFetchRequest:request error:&error];
+            if (error){
+                NSLog(@"Error Loading Data : %@",[error description]);
+            }
+            
+            if (![result count]) {
+                //case there is no data on database
+                //create new personal information
+                if (!self.insurance) {
+                    //        //create new insurance
+                    self.insurance = [Insurance newInsuranceInContext:context];
+                }
+            }else {
+                //get data from database
+                self.insurance = [result lastObject];
+            }
+            
+    }else{
+        //get from database
+        if (self.insurance.policyPeriodFrom) {
+            periodFrom = [@{ kTitleKey : @"Policy period from",
+                             kDateKey : [NSDate date] } mutableCopy];
+        }
         
-        //create new personal
-        self.insurance = [Insurance newInsuranceInContext:context];
+        if (self.insurance.policyPeriodTo) {
+            periodTo = [@{ kTitleKey : @"Policy period to",
+                           kDateKey : [NSDate date] } mutableCopy];
+        }
+        
+    }
+    if (!periodFrom) {
+        periodFrom = [@{ kTitleKey : @"Policy period from",
+                         kDateKey : [NSDate date] } mutableCopy];
+    }
+    
+    if (!periodTo) {
+        periodTo = [@{ kTitleKey : @"Policy period to",
+                       kDateKey : [NSDate date] } mutableCopy];
     }
     
     
+    
+    self.dataArray = @[policyNumber,insuranceName,periodFrom,periodTo,coverage];
 }
 
 - (void)dealloc
@@ -311,10 +387,17 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
      */
     
     BOOL value = NO;
-    value = self.insurance.policyNumber != Nil;
-    value &= self.insurance.name && self.insurance.coverage && self.insurance.policyPeriodFrom && self.insurance.policyPeriodTo;
     
-    return value;
+    if(!self.insurance.policyNumber || [self.insurance.policyNumber isEqualToString:@""]) return value;
+    if(!self.insurance.name || [self.insurance.name isEqualToString:@""]) return value;
+    if(!self.insurance.coverage || [self.insurance.coverage isEqualToString:@""]) return value;
+    if(!self.insurance.policyPeriodFrom) return value;
+    if(!self.insurance.policyPeriodTo) return value;
+    
+//    value = self.insurance.policyNumber != Nil;
+//    value &= self.insurance.name && self.insurance.coverage && self.insurance.policyPeriodFrom && self.insurance.policyPeriodTo;
+    
+    return YES;
 }
 
 #pragma mark - Table view data source

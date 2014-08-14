@@ -2,6 +2,7 @@
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Insurance" representedClassName="Insurance" syncable="YES">
         <attribute name="coverage" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isCustomer" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="name" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="policyNumber" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="policyPeriodFrom" optional="YES" attributeType="Date" syncable="YES"/>
@@ -12,6 +13,7 @@
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="dateOfBirth" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isCustomer" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="name" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="simExpiredDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -30,8 +32,8 @@
         <relationship name="personal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Personal" inverseName="vehicle" inverseEntity="Personal" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Insurance" positionX="16" positionY="218" width="128" height="133"/>
-        <element name="Personal" positionX="-63" positionY="0" width="128" height="178"/>
-        <element name="Vehicle" positionX="-245" positionY="180" width="128" height="163"/>
+        <element name="Insurance" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Personal" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Vehicle" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

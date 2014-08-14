@@ -146,6 +146,9 @@
                                                                                                 if (failure) failure(json, error, response.statusCode);
                                                                                             }
                                                                                         }];
+    
+    NSLog(@"request : %@",[request description]);
+    
     [self enqueueHTTPRequestOperation:operation];
     self.parameterEncoding = AFFormURLParameterEncoding;
 }

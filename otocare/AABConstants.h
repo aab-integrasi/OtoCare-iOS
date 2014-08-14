@@ -51,6 +51,9 @@
 #define CORE_DATA_OBJECT(obj) ({ __typeof__ (obj) __obj = (obj); __obj == [NSNull null] ? nil : obj; })
 
 extern NSString *const CONST_ROOT;
+extern NSString *const CONST_VEHICLE_TYPE;
+extern NSString *const CONST_VEHICLE_BRAND;
+extern NSString *const CONST_VEHICLE_YEAR;
 
 //constant value for CoreData
 

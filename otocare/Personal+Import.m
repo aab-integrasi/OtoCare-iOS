@@ -33,6 +33,7 @@
     @try {
         if (json) {
             //todo : parse json format here
+            NSLog(@"address : %@",[json objectForKey:PERSONAL_ADDRESS]);
             self.address = CORE_DATA_OBJECT([json objectForKey:PERSONAL_ADDRESS]);
              self.email = CORE_DATA_OBJECT([json objectForKey:PERSONAL_EMAIL]);
             self.name = CORE_DATA_OBJECT([json objectForKey:PERSONAL_NAME]);
@@ -71,6 +72,14 @@
                     }
                 }
             }
+            
+            //save database
+            NSError * err;
+            [self.managedObjectContext save:&err];
+            if(err){
+                 NSLog(@"error save database : %@",[err description]);
+            }
+            
         }
         
         

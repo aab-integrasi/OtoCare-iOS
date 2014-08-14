@@ -12,6 +12,9 @@
 
 NSString *const CONST_ROOT                      = @"Root";
 NSString *const CONST_AABConstantKeys            = @"AABConstantKeys";
+NSString *const CONST_VEHICLE_TYPE                  = @"VehicleType";
+NSString *const CONST_VEHICLE_BRAND                 = @"Brands";
+NSString *const CONST_VEHICLE_YEAR                  = @"Years";
 
 //constant value for CoreData
 

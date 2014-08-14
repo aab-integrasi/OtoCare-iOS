@@ -15,7 +15,10 @@
 #import "AABDatePickerVC.h"
 #import "Vehicle+Extended.h"
 #import "AABDBManager.h"
-
+#import "AABOptionChooserViewController.h"
+#import "FPPopoverController.h"
+#import "DemoTableController.h"
+#import "FPPopoverController.h"
 
 #define kPickerAnimationDuration    0.40   // duration for the animation to slide the date picker into view
 #define kDatePickerTag              99     // view tag identifiying the date picker view
@@ -33,11 +36,12 @@ static NSString *kCellAddress = @"cellAddress";     // the remaining cells at th
 static NSString *kCell = @"cell";     // the remaining cells at the end
 
 
-@interface AABVehicleViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface AABVehicleViewController () <UITableViewDataSource, UITableViewDelegate,UIPopoverControllerDelegate, AABOptionChooserDelegate,FPPopoverControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIDatePicker *pickerView;
 
 @property (nonatomic, strong) NSArray *dataArray;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) FPPopoverController *popover;
 
 // keep track which indexPath points to the cell with UIDatePicker
 @property (nonatomic, strong) NSIndexPath *datePickerIndexPath;
@@ -50,6 +54,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
+    
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
@@ -71,10 +76,19 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
      */
     NSLog(@"policeNumber : %@, brand : %@, type : %@, year : %@, chassisNumber : %@, engineNumber : %@ , stnkExpired : %@",self.vehicle.policeNumber,self.vehicle.brand,self.vehicle.type,self.vehicle.year,self.vehicle.chassisNumber,self.vehicle.engineNumber,self.vehicle.stnkExpiredDate);
     BOOL value = NO;
-    value = self.vehicle.policeNumber != Nil;
-    value &= self.vehicle.policeNumber && self.vehicle.brand && self.vehicle.type && self.vehicle.year && self.vehicle.chassisNumber && self.vehicle.engineNumber && self.vehicle.stnkExpiredDate;
     
-    return value;
+    if([self.vehicle.policeNumber isEqualToString:@""] || !self.vehicle.policeNumber) return value;
+    if([self.vehicle.brand isEqualToString:@""] || !self.vehicle.brand) return value;
+    if([self.vehicle.type isEqualToString:@""] || !self.vehicle.type) return value;
+    if([self.vehicle.year isEqualToString:@""] || !self.vehicle.year) return value;
+    if([self.vehicle.chassisNumber isEqualToString:@""] || !self.vehicle.chassisNumber) return value;
+    if([self.vehicle.engineNumber isEqualToString:@""] || !self.vehicle.engineNumber) return value;
+    if(!self.vehicle.stnkExpiredDate) return value;
+    
+    //    value = self.vehicle.policeNumber != Nil;
+    //    value &= self.vehicle.policeNumber && self.vehicle.brand && self.vehicle.type && self.vehicle.year && self.vehicle.chassisNumber && self.vehicle.engineNumber && self.vehicle.stnkExpiredDate;
+    
+    return YES;
 }
 
 - (void)viewDidLoad
@@ -93,14 +107,13 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     NSMutableDictionary *viBrand = [@{ kTitleKey : @"Vehicle brand" } mutableCopy];
     NSMutableDictionary *viType = [@{ kTitleKey : @"Vehicle type" } mutableCopy];
     NSMutableDictionary *viYear = [@{ kTitleKey : @"Vehicle year" } mutableCopy];
-        NSMutableDictionary *chassis = [@{ kTitleKey : @"Chassis number" } mutableCopy];
-        NSMutableDictionary *engine = [@{ kTitleKey : @"Engine number" } mutableCopy];
-    NSMutableDictionary *stnk = [@{ kTitleKey : @"STNK expired date",
-                                     kDateKey : [NSDate date] } mutableCopy];
-   
+    NSMutableDictionary *chassis = [@{ kTitleKey : @"Chassis number" } mutableCopy];
+    NSMutableDictionary *engine = [@{ kTitleKey : @"Engine number" } mutableCopy];
+    NSMutableDictionary *stnk = Nil;
     
     
-    self.dataArray = @[policeNum,viBrand,viType,viYear,chassis,engine,stnk];
+    
+    
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateStyle:NSDateFormatterShortStyle];    // show short-style date format
@@ -119,12 +132,46 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                                                object:nil];
     //create new vehicle object
     if (!self.vehicle) {
-        //create vehicle
+//        //create vehicle
+//        NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+//        
+//        //create new personal
+//        self.vehicle = [Vehicle newVehicleInContext:context];
+        //check from database
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Vehicle"];
+        request.returnsObjectsAsFaults = YES;
+        
         NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
-       
-        //create new personal
-        self.vehicle = [Vehicle newVehicleInContext:context];
+        // Generate data
+        NSError *error;
+        NSArray * result = [context executeFetchRequest:request error:&error];
+        if (error){
+            NSLog(@"Error Loading Data : %@",[error description]);
+        }
+        
+        if (![result count]) {
+            //case there is no data on database
+            //create new personal information
+            if (!self.vehicle) {
+                //create new personal
+                self.vehicle = [Vehicle newVehicleInContext:context];
+            }
+        }else {
+            //get data from database
+            self.vehicle = [result lastObject];
+        }
+        
+    }else{
+        stnk = [@{ kTitleKey : @"STNK expired date",
+                   kDateKey : self.vehicle.stnkExpiredDate } mutableCopy];
     }
+    
+    if (!stnk) {
+        stnk = [@{ kTitleKey : @"STNK expired date",
+                   kDateKey : [NSDate date] } mutableCopy];
+        
+    }
+    self.dataArray = @[policeNum,viBrand,viType,viYear,chassis,engine,stnk];
 }
 
 - (void)dealloc
@@ -346,57 +393,39 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     
     AABFormCell *cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
     
-
+    
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
             
-           
+            
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Police number";
             cell.textValue.placeholder = @"e.g B 1972 SON";
             cell.textValue.text = self.vehicle.policeNumber;
             cell.onTextValueReturn = ^(NSString *value){
-                                    self.vehicle.policeNumber = value;
+                self.vehicle.policeNumber = value;
             };
             cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet], [NSCharacterSet uppercaseLetterCharacterSet]];
             cell.maxCharCount = 40;
         }else if (indexPath.row == 1) {
-            cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
+            cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeDetail reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Vehicle brand";
-            cell.textValue.placeholder = @"e.g Ford";
-                       cell.textValue.text = self.vehicle.brand;
-            cell.onTextValueReturn = ^(NSString *value){
-                                self.vehicle.brand = value;
-            };
-            cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
-            cell.maxCharCount = 20;
+            cell.labelValue.text = self.vehicle.brand;
         }else if (indexPath.row == 2) {
-            cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
+            cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeDetail reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Vehicle type";
-            cell.textValue.placeholder = @"e.g Fiesta";
-                            cell.textValue.text = self.vehicle.type;
-            cell.onTextValueReturn = ^(NSString *value){
-                self.vehicle.type = value;
-            };
-            cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
-            cell.maxCharCount = 20;
+            cell.labelValue.text = self.vehicle.type;
         }else if (indexPath.row == 3) {
-            cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
-            cell.labelTitle.text = @"Vehicle year";
-            cell.textValue.placeholder = @"2012";
-                       cell.textValue.text = self.vehicle.year;
-            cell.onTextValueReturn = ^(NSString *value){
-                                self.vehicle.year = value;
-            };
-            cell.characterSets = @[[NSCharacterSet characterSetWithCharactersInString:@"0123456789"]];
-            cell.maxCharCount = 4;
+            cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeDetail reuseIdentifier:cellIdentifier];cell.labelTitle.text = @"Vehicle year";
+            cell.labelValue.text = self.vehicle.year;
         }else if (indexPath.row == 4) {
+            
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Chassis number";
             cell.textValue.placeholder = @"e.g MNBJXXRDJGBS58166";
-                        cell.textValue.text = self.vehicle.chassisNumber;
+            cell.textValue.text = self.vehicle.chassisNumber;
             cell.onTextValueReturn = ^(NSString *value){
-                                self.vehicle.chassisNumber = value;
+                self.vehicle.chassisNumber = value;
             };
             cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet], [NSCharacterSet uppercaseLetterCharacterSet]];
             cell.maxCharCount = 20;
@@ -404,9 +433,9 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Engine number";
             cell.textValue.placeholder = @"e.g N5JABS68176";
-                        cell.textValue.text = self.vehicle.engineNumber;
+            cell.textValue.text = self.vehicle.engineNumber;
             cell.onTextValueReturn = ^(NSString *value){
-                                self.vehicle.engineNumber = value;
+                self.vehicle.engineNumber = value;
             };
             cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet], [NSCharacterSet uppercaseLetterCharacterSet]];
             cell.maxCharCount = 20;
@@ -460,7 +489,26 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     }
     else
     {
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        //        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        if (indexPath.section == 0) {
+            if (indexPath.row == 1) {
+                AABOptionChooserViewController *vc = [[AABOptionChooserViewController alloc] initWithConstantsKey:CONST_VEHICLE_BRAND delegate:self];
+                vc.selectedValue = self.vehicle.brand;
+                vc.title = @"Vehicle Brands";
+                [self showPopoverFromRect:[self.tableView rectForRowAtIndexPath:indexPath] withViewController:vc navigationController:NO];
+            }else if (indexPath.row == 2) {
+                AABOptionChooserViewController *vc = [[AABOptionChooserViewController alloc] initWithConstantsKey:CONST_VEHICLE_TYPE delegate:self];
+                vc.selectedValue = self.vehicle.type;
+                vc.title = @"Vehicle Type";
+                [self showPopoverFromRect:[self.tableView rectForRowAtIndexPath:indexPath] withViewController:vc navigationController:NO];
+            }else if (indexPath.row == 3) {
+                AABOptionChooserViewController *vc = [[AABOptionChooserViewController alloc] initWithConstantsKey:CONST_VEHICLE_YEAR delegate:self];
+                vc.selectedValue = self.vehicle.year;
+                vc.title = @"Vehicle Year";
+                [self showPopoverFromRect:[self.tableView rectForRowAtIndexPath:indexPath] withViewController:vc navigationController:NO];
+            }
+        }
+        
     }
 }
 
@@ -587,17 +635,77 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
             //            NSString * message = @"Please fill ";
             NSString *message = [[NSString alloc] init];
             //            message = @"Please fill ";
-            [message stringByAppendingString:@"Please fill "];
+            //            [message stringByAppendingString:@"Please fill "];
             
-            message = [NSString stringWithFormat:@"%@",@"Please fill "];
-        
+            //            message = [NSString stringWithFormat:@"%@",@"Please fill "];
             
-            [message stringByAppendingString:@" value"];
-            //show message
-            [self showAlertWithTitle:@"Invalid input" message:message];
             
-            NSLog(@"message : %@",message);
-            message = Nil;
+            //            [message stringByAppendingString:@" value"];
+            if([self.vehicle.policeNumber isEqualToString:@""] || !self.vehicle.policeNumber) {
+                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Police number"];
+                //show message
+                [self showAlertWithTitle:@"Invalid input" message:message];
+                
+                NSLog(@"message : %@",message);
+                message = Nil;
+                return NO;
+            }
+            if([self.vehicle.brand isEqualToString:@""] || !self.vehicle.brand) {
+                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Brand"];
+                //show message
+                [self showAlertWithTitle:@"Invalid input" message:message];
+                
+                NSLog(@"message : %@",message);
+                message = Nil;
+                return NO;
+                
+            }
+            if([self.vehicle.type isEqualToString:@""] || !self.vehicle.type) {
+                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Type"];
+                //show message
+                [self showAlertWithTitle:@"Invalid input" message:message];
+                
+                NSLog(@"message : %@",message);
+                message = Nil;
+                return NO;
+            }
+            if([self.vehicle.year isEqualToString:@""] || !self.vehicle.year) {
+                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Year"];
+                //show message
+                [self showAlertWithTitle:@"Invalid input" message:message];
+                
+                NSLog(@"message : %@",message);
+                message = Nil;
+                return NO;
+            }
+            if([self.vehicle.chassisNumber isEqualToString:@""] || !self.vehicle.chassisNumber) {
+                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Chassis Number"];
+                //show message
+                [self showAlertWithTitle:@"Invalid input" message:message];
+                
+                NSLog(@"message : %@",message);
+                message = Nil;
+                return NO;
+            }
+            if([self.vehicle.engineNumber isEqualToString:@""] || !self.vehicle.engineNumber) {
+                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Engine Number"];
+                //show message
+                [self showAlertWithTitle:@"Invalid input" message:message];
+                
+                NSLog(@"message : %@",message);
+                message = Nil;
+                return NO;
+            }
+            if(!self.vehicle.stnkExpiredDate) {
+                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"STNK expired Date"];
+                //show message
+                [self showAlertWithTitle:@"Invalid input" message:message];
+                
+                NSLog(@"message : %@",message);
+                message = Nil;
+                return NO;
+            }
+            
             return NO;
         }
         
@@ -634,11 +742,108 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
             }
         }else {
             //case not exist
-        //concatenate personal and vehicle
-        [self.personal addVehicleObject:self.vehicle];
+            //concatenate personal and vehicle
+            [self.personal addVehicleObject:self.vehicle];
         }
         [[segue destinationViewController] setPersonal:self.personal];
     }
+}
+- (void)showOptionChooserWithConstantsKey:(NSString *)constantsKey indexPath:(NSIndexPath *)indexPath useNavigation:(BOOL)useNavigation
+{
+    AABOptionChooserViewController *vc = [[AABOptionChooserViewController alloc] initWithConstantsKey:constantsKey delegate:self];
+    vc.view.tintColor = [UIColor IMMagenta];
+    [self showPopoverFromRect:[self.tableView rectForRowAtIndexPath:indexPath] withViewController:vc navigationController:useNavigation];
+}
+
+- (void)optionChooser:(AABOptionChooserViewController *)optionChooser didSelectOptionAtIndex:(NSUInteger)selectedIndex withValue:(id)value
+{
+    
+    NSLog(@"value : %@",value);
+    if (optionChooser.constantsKey == CONST_VEHICLE_BRAND) {
+        self.vehicle.brand = value;
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }else if (optionChooser.constantsKey == CONST_VEHICLE_TYPE) {
+        self.vehicle.type = value;
+        
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }else if (optionChooser.constantsKey == CONST_VEHICLE_YEAR) {
+        self.vehicle.year = value;
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    
+    [self.popover dismissPopoverAnimated:YES];
+    self.popover = nil;
+}
+
+- (void)showPopoverFromRect:(CGRect)rect withViewController:(UIViewController *)vc navigationController:(BOOL)useNavigation
+{
+    
+    rect = CGRectMake(rect.size.width - 150, rect.origin.y, rect.size.width, rect.size.height);
+    //    vc.view.tintColor = [UIColor IMMagenta];
+    //    vc.modalInPopover = NO;
+    
+    if (useNavigation) {
+        UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:vc];
+        navCon.navigationBar.tintColor = [UIColor IMMagenta];
+        self.popover = [[FPPopoverController alloc] initWithViewController:navCon];
+    }else {
+        vc.view.tintColor = [UIColor IMMagenta];
+        self.popover = [[FPPopoverController alloc] initWithViewController:vc];
+    }
+    
+    //popover.arrowDirection = FPPopoverArrowDirectionAny;
+    self.popover.tint = FPPopoverDefaultTint;
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        self.popover.contentSize = CGSizeMake(300, 500);
+    }
+    self.popover.arrowDirection = FPPopoverArrowDirectionRight;
+    
+    //    self.popover.delegate = self;
+    //    [self.popover presentPopoverFromRect:rect inView:self.tableView permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    //    self.popover.contentSize = CGSizeMake(150,200);
+    [self.popover presentPopoverFromView:self.tableView];
+    //    [self.popover presentPopoverFromPoint:rect.origin];
+}
+
+-(void)popover:(id)sender
+{
+    //the controller we want to present as a popover
+    DemoTableController *controller = [[DemoTableController alloc] initWithStyle:UITableViewStylePlain];
+    controller.delegate = self;
+    //    controller.title = @"Vehicle Brands";
+    controller.data = [AABConstants constantsForKey:CONST_VEHICLE_BRAND];
+    //    NSArray * tmp =[AABConstants constantsForKey:CONST_VEHICLE_BRAND];
+    //
+    //    NSLog(@"brands : %@",[tmp description]);
+    //    AABOptionChooserViewController *controller = [[AABOptionChooserViewController alloc] initWithConstantsKey:CONST_VEHICLE_BRAND delegate:self];
+    //    controller.selectedValue = self.vehicle.brand;
+    controller.title =@"Vehicle Brands";
+    
+    FPPopoverController *popover = [[FPPopoverController alloc] initWithViewController:controller];
+    
+    
+    //popover.arrowDirection = FPPopoverArrowDirectionAny;
+    popover.tint = FPPopoverDefaultTint;
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        popover.contentSize = CGSizeMake(300, 500);
+    }
+    popover.arrowDirection = FPPopoverArrowDirectionRight;
+    
+    //sender is the UIButton view
+    [popover presentPopoverFromView:sender];
+    
+}
+
+
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+    self.popover = nil;
 }
 
 @end

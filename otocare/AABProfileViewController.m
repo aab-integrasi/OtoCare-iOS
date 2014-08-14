@@ -23,6 +23,7 @@
 
 @property (nonatomic,strong) MBProgressHUD *HUD;
 @property (nonatomic,strong) Vehicle * vehicle;
+@property (nonatomic) BOOL gardaCustomer;
 
 @end
 
@@ -37,10 +38,45 @@
     return self;
 }
 
+- (void)setGardaCustomer:(BOOL)gardaCustomer{
+    _gardaCustomer = gardaCustomer;
+    
+    if (_gardaCustomer) {
+        //for garda customer enable chassis & police number
+        self.engineNumber.enabled = self.chassisNumber.enabled = YES;
+    }
+    else{
+        
+        //for non garda customer disable chassis & police number
+        self.engineNumber.enabled = self.chassisNumber.enabled = NO;
+        
+        //resign first responder in both side
+         [self.engineNumber resignFirstResponder];
+         [self.chassisNumber resignFirstResponder];
+    }
+}
+
+- (void)switcherValueChanged:(UISwitch *)sender
+{
+    self.gardaCustomer = !sender.on;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    //set no for default
+    self.gardaCustomer = NO;
+//    self.policeNumber.userInteractionEnabled;
+    self.engineNumber.enabled = NO;
+    self.chassisNumber.enabled = NO;
+    
+    [self.isNotCustomer addTarget:self action:@selector(switcherValueChanged:) forControlEvents:UIControlEventValueChanged];
+    
+    
+    //register keyboard
+    [self registerForKeyboardNotifications];
     
     //check from database
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Personal"];
@@ -118,6 +154,15 @@
         [self.view endEditing:YES];
 }
 
+- (IBAction)cancelButton:(id)sender {
+//    if(self.personal){
+//        //roolback database
+//        [self.personal.managedObjectContext rollback];
+//        self.personal = Nil;
+//    }
+
+    [self dismissViewControllerAnimated:YES completion:Nil];
+}
 
 - (IBAction)submitButton:(id)sender {
     
@@ -130,7 +175,7 @@
         //open new profile
         AABProfileTableViewController *profile = [self.storyboard instantiateViewControllerWithIdentifier:@"AABProfileTableViewController"];
         
-        if (self.policeNumber.text.length || self.chassisNumber.text.length) {
+        if (self.engineNumber.text.length || self.chassisNumber.text.length) {
             //user already input value then forward that value
             
             //get vehicle object from personal
@@ -138,10 +183,10 @@
             
             if ([objects count]) {
                 for (Vehicle * vehicle in objects) {
-                    if ([vehicle.chassisNumber isEqualToString:self.chassisNumber.text] || [vehicle.policeNumber isEqualToString:self.policeNumber.text]) {
+                    if ([vehicle.chassisNumber isEqualToString:self.chassisNumber.text] || [vehicle.policeNumber isEqualToString:self.engineNumber.text]) {
                         //save data
                         if (!self.chassisNumber.text) vehicle.chassisNumber = self.chassisNumber.text;
-                        if (!self.policeNumber.text) vehicle.policeNumber = self.policeNumber.text;
+                        if (!self.engineNumber.text) vehicle.policeNumber = self.engineNumber.text;
                             
                             }
                 }
@@ -150,29 +195,30 @@
                 Vehicle * vehicle = [Vehicle newVehicleInContext:self.personal.managedObjectContext];
                 
                 if(self.chassisNumber.text) vehicle.chassisNumber = self.chassisNumber.text;
-                if(self.policeNumber.text) vehicle.policeNumber = self.policeNumber.text;
+                if(self.engineNumber.text) vehicle.policeNumber = self.engineNumber.text;
             }
         }
 //        if (self.personal) {
 //             [profile setPersonal:self.personal];
 //        }
-        [self.tabBarController presentViewController:profile animated:YES completion:nil];
+        [self presentViewController:profile animated:YES completion:nil];
         
     }else {
         //if customer than, check the input and then send data to server
-        if (!self.policeNumber.text.length && !self.chassisNumber.text.length) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The police number and chassis number that you input is not valid" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        if (!self.engineNumber.text.length && !self.chassisNumber.text.length) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The engine number and chassis number that you input is not valid. Please contact our Garda Akses Officers" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
             [alert show];
             return;
         }
-        if (!self.policeNumber.text.length) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Please input the policy number" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        if (!self.engineNumber.text.length) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Please input the engine number" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
             [alert show];
             return;
         }
         if (!self.chassisNumber.text.length) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Please input the chassis number" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
             [alert show];
+            return;
         }
         
         
@@ -237,8 +283,8 @@
         //formatting data & send
         NSMutableDictionary * formatted = [NSMutableDictionary dictionary];
         
-        [formatted setObject:self.policeNumber.text forKey:@"policeNumber"];
-        [formatted setObject:self.chassisNumber.text forKey:@"chassisNumber"];
+        [formatted setObject:self.engineNumber.text forKey:VEHICLE_ENGINE_NUMBER];
+        [formatted setObject:self.chassisNumber.text forKey:VEHICLE_CHASSIS_NUMBER];
         [formatted setObject:self.isNotCustomer.on?@"true":@"false" forKey:@"isNotCustomer"];
         NSLog(@"formatted : %@",[formatted description]);
         [self sendData:formatted];
@@ -248,22 +294,20 @@
 
 - (void)successSubmit:(NSDictionary *)json
 {
-    
+    NSLog(@"Return json : %@",[json description]);
     //parse json & forward to next view controller
     [self.personal parseJSON:json inManagedObjectContext:self.personal.managedObjectContext];
     
     
     //open new profile
     AABProfileTableViewController *profile = [self.storyboard instantiateViewControllerWithIdentifier:@"AABProfileTableViewController"];
+
     
-    //set editable to false
-//    profile.ed
+//    UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:profile];
+//    [self.navigationController presentViewController:navCon animated:YES completion:Nil];
     
     
-    //forward value to next view controller
-    profile.personal = self.personal;
-    
-    [self.tabBarController presentViewController:profile animated:YES completion:nil];
+    [self presentViewController:profile animated:YES completion:nil];
     
 }
 - (void) sendData:(NSDictionary *)params
@@ -271,17 +315,33 @@
     NSLog(@"json example : %@",[params  description]);
     
     AABHTTPClient *client = [AABHTTPClient sharedClient];
-    [client postJSONWithPath:@"otocare/submit"
-                  parameters:params
-                     success:^(NSDictionary *jsonData, int statusCode){
-                         [self showAlertWithTitle:@"Upload Success" message:nil];
-                         NSLog(@"Upload Success");
-                         [self successSubmit:jsonData];
-                     }
-                     failure:^(NSDictionary *jsonData, NSError *error, int statusCode){
-                         [self showAlertWithTitle:@"Upload Failed" message:@"Please check your network connection and try again. If problem persist, contact administrator."];
-                         NSLog(@"Upload Fail : %@",[error description]);
-                     }];
+//    aab/loginotocare.php
+//    [client postJSONWithPath:@"otocare/submit"
+
+    
+    [client getJSONWithPath:@"aab/loginotocare.php" parameters:params success:^(NSDictionary *jsonData, int statusCode){
+        [self showAlertWithTitle:@"Upload Success" message:@"Your data has been submitted successfully"];
+        NSLog(@"Upload Success");
+        [self successSubmit:jsonData];
+    }
+                    failure:^(NSError *error){
+                        [self showAlertWithTitle:@"Upload Failed" message:@"Please check your network connection and try again. If problem persist, contact administrator."];
+                        NSLog(@"Upload Fail : %@",[error description]);
+                    }];
+    
+//        [client postJSONWithPath:@"aab/loginotocare.php"
+////            [client postJSONWithPath:@""
+//                  parameters:params
+//                     success:^(NSDictionary *jsonData, int statusCode){
+//                         [self showAlertWithTitle:@"Upload Success" message:@"Your data has been submitted successfully"];
+//                         NSLog(@"Upload Success");
+//                         [self successSubmit:jsonData];
+//                     }
+//                     failure:^(NSDictionary *jsonData, NSError *error, int statusCode){
+//                         [self showAlertWithTitle:@"Upload Failed" message:@"Please check your network connection and try again. If problem persist, contact administrator."];
+//                         NSLog(@"Upload Fail : %@",[error description]);
+//                     }];
+    
 }
 
 - (void)showAlertWithTitle:(NSString *)title message:(NSString *)message{
@@ -296,6 +356,46 @@
 - (void)hudWasHidden {
     //    // Remove HUD from screen when the HUD was hidded
     [_HUD removeFromSuperview];
+}
+
+// Call this method somewhere in your view controller setup code.
+- (void)registerForKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWasShown:)
+                                                 name:UIKeyboardDidShowNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillBeHidden:)
+                                                 name:UIKeyboardWillHideNotification object:nil];
+    
+}
+
+// Called when the UIKeyboardDidShowNotification is sent.
+- (void)keyboardWasShown:(NSNotification*)aNotification
+{
+    NSDictionary* info = [aNotification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
+    self.scrollViewController.contentInset = contentInsets;
+    self.scrollViewController.scrollIndicatorInsets = contentInsets;
+    
+    // If active text field is hidden by keyboard, scroll it so it's visible
+    // Your app might not need or want this behavior.
+    CGRect aRect = self.view.frame;
+    aRect.size.height -= kbSize.height;
+    if (!CGRectContainsPoint(aRect, self.chassisNumber.frame.origin) ) {
+        [self.scrollViewController scrollRectToVisible:self.chassisNumber.frame animated:YES];
+    }
+}
+
+// Called when the UIKeyboardWillHideNotification is sent
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{
+    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+    self.scrollViewController.contentInset = contentInsets;
+    self.scrollViewController.scrollIndicatorInsets = contentInsets;
 }
 
 /*

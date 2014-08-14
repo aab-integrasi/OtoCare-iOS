@@ -10,11 +10,12 @@
 #import "Vehicle.h"
 #import "Personal.h"
 #import "AABInsuranceViewController.h"
+#import "FPPopoverController.h"
 
 @protocol AABVehicleViewControllerDelegate;
 
 
-@interface AABVehicleViewController : AABTableViewController<AABInsuranceViewControllerDelegate>
+@interface AABVehicleViewController : AABTableViewController<AABInsuranceViewControllerDelegate,FPPopoverControllerDelegate>
 
 @property (nonatomic, strong) Vehicle *vehicle;
 @property (nonatomic, strong) Personal *personal;

@@ -2,12 +2,34 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>Brands</key>
+	<array>
+		<string>Toyota</string>
+		<string>Honda</string>
+		<string>Yamaha</string>
+	</array>
+	<key>VehicleType</key>
+	<array>
+		<string>Motorcycle</string>
+		<string>Car</string>
+	</array>
+	<key>Years</key>
+	<array>
+		<string>2010</string>
+		<string>2011</string>
+		<string>2012</string>
+		<string>2013</string>
+		<string>2014</string>
+		<string>2015</string>
+		<string>2016</string>
+		<string>2017</string>
+	</array>
 	<key>AABConstantKeys</key>
 	<dict>
 		<key>AABGoogleAPIKey</key>
 		<string>AIzaSyDyxGaAlNHxtuz5RhUcGmM23JkTtdro-1U</string>
 		<key>AABBaseURL</key>
-		<string>http://bolehnego.com/aab/loginotocare.php</string>
+		<string>http://10.1.2.247/</string>
 		<key>AABAPIKey</key>
 		<string>d67acd1c1fa33b68055f9f7dafaa3ae0</string>
 		<key>AABAPISecret</key>
