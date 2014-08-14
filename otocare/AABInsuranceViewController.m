@@ -38,6 +38,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 
 @property (nonatomic, strong) NSArray *dataArray;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic) BOOL saveDatabaseStatus;
 
 // keep track which indexPath points to the cell with UIDatePicker
 @property (nonatomic, strong) NSIndexPath *datePickerIndexPath;
@@ -128,8 +129,12 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         [self.personal.managedObjectContext save:&error];
         if (error) {
             NSLog(@"Error while saving to database : %@", [error description]);
-             [self showAlertWithTitle:@"Failed Saving Database" message:nil];
+//             [self showAlertWithTitle:@"Failed Saving Database" message:nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed Saving Database" message:nil delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            alert.tag = AABDefaultAlertTag;
+            [alert show];
         }else{
+                self.saveDatabaseStatus = YES;
             [self showAlertWithTitle:@"Success Saving Database" message:nil];
         //save database success
         [[NSNotificationCenter defaultCenter] postNotificationName:AABDatabaseChangedNotification object:nil];
@@ -140,6 +145,18 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         NSLog(@"json example : %@",[self.personal formatted]);
     }
 }
+
+#pragma mark UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == AABDefaultAlertTag && buttonIndex != [alertView cancelButtonIndex]) {
+        //save error
+        
+        self.saveDatabaseStatus = NO;
+    }
+    
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -159,6 +176,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
      policy period to
      Coverage jkbsfvjkbsdkvjb
      */
+    self.saveDatabaseStatus = YES;
     NSMutableDictionary *policyNumber = [@{ kTitleKey : @"Policy Number" } mutableCopy];
     NSMutableDictionary *insuranceName = [@{ kTitleKey : @"Insurance Name" } mutableCopy];
     NSMutableDictionary *coverage = [@{ kTitleKey : @"Coverage" } mutableCopy];
@@ -508,7 +526,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         if (indexPath.row == 0) {
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Policy Number";
-            cell.textValue.placeholder = @"e.g 0413008074";
+//            cell.textValue.placeholder = @"e.g 0413008074";
                            cell.textValue.text = self.insurance.policyNumber;
             cell.onTextValueReturn = ^(NSString *value){
                                     self.insurance.policyNumber = value;
@@ -518,7 +536,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         }else if (indexPath.row == 1) {
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Insurance Name";
-            cell.textValue.placeholder = @"e.g Garda Oto";
+//            cell.textValue.placeholder = @"e.g Garda Oto";
                       cell.textValue.text = self.insurance.name;
             cell.onTextValueReturn = ^(NSString *value){
                                self.insurance.name = value;
@@ -528,7 +546,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         }else if (indexPath.row == 4) {
             cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
             cell.labelTitle.text = @"Coverage";
-            cell.textValue.placeholder = @"e.g Comprehensive";
+//            cell.textValue.placeholder = @"e.g Comprehensive";
                        cell.textValue.text = self.insurance.coverage;
             cell.onTextValueReturn = ^(NSString *value){
                                self.insurance.coverage = value;
@@ -716,6 +734,17 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return ([self indexPathHasPicker:indexPath] ? self.pickerCellRowHeight : self.tableView.rowHeight);
+}
+
+//
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+    
+    if ([identifier isEqualToString:@"showProfile"]) {
+        
+    }
+    
+    return YES;
 }
 /*
  // Override to support conditional editing of the table view.

@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 PT. Asuransi Astra Buana. All rights reserved.
 //
 
-#import "AABProfileTableViewController.h"
+#import "AABProfileDetailVC.h"
 #import "AABTableHeaderView.h"
 #import "AABFormCell.h"
 #import "AABDatePickerVC.h"
@@ -33,11 +33,13 @@ static NSString *kCellAddress = @"cellAddress";     // the remaining cells at th
 static NSString *kCell = @"cell";     // the remaining cells at the end
 
 
-@interface AABProfileTableViewController ()<UITableViewDataSource, UITableViewDelegate>
+@interface AABProfileDetailVC ()<UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UIDatePicker *pickerView;
 
 @property (nonatomic, strong) NSArray *dataArray;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) UIBarButtonItem *backButton;
+@property (nonatomic, strong) UIBarButtonItem *editSaveButton;
 
 
 // keep track which indexPath points to the cell with UIDatePicker
@@ -47,12 +49,13 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 
 @end
 
-@implementation AABProfileTableViewController
+@implementation AABProfileDetailVC
 
-- (void)setAllowEditing:(BOOL)allowEditing
-{
-    _allowEditing = allowEditing;
-}
+//- (void)setAllowEditing:(BOOL)allowEditing
+//{
+//    _allowEditing = allowEditing;
+//}
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
@@ -69,10 +72,10 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 //    }
 //}
 
-- (IBAction)cancel:(id)sender {
-    
-        [self dismissViewControllerAnimated:YES completion:nil];
-}
+//- (IBAction)cancel:(id)sender {
+//    
+//    [self dismissViewControllerAnimated:YES completion:nil];
+//}
 
 
 - (void)viewDidLoad
@@ -87,13 +90,13 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     
     // setup our data source
     NSMutableDictionary *name = [@{ kTitleKey : @"Name" } mutableCopy];
-    NSMutableDictionary *email = [@{ kTitleKey : @"email" } mutableCopy];
+    NSMutableDictionary *email = [@{ kTitleKey : @"E-mail" } mutableCopy];
     NSMutableDictionary *tlp = [@{ kTitleKey : @"Telephone" } mutableCopy];
     NSMutableDictionary *address = [@{ kTitleKey : @"Address" } mutableCopy];
     NSMutableDictionary *birth = Nil;
     NSMutableDictionary *sim = Nil;
     
-
+    
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateStyle:NSDateFormatterShortStyle];    // show short-style date format
@@ -114,8 +117,8 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     //check from database
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Personal"];
     request.returnsObjectsAsFaults = YES;
-
-     NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+    
+    NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
     // Generate data
     NSError *error;
     NSArray * result = [context executeFetchRequest:request error:&error];
@@ -158,10 +161,50 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         sim = [@{ kTitleKey : @"SIM expired date",
                   kDateKey : [NSDate date] } mutableCopy];
     }
-        self.dataArray = @[name,email,tlp,address,birth,sim];
+    self.dataArray = @[name,email,tlp,address,birth,sim];
+    
+    self.backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:self action:@selector(back)];
+    
+        self.navigationItem.leftBarButtonItems = @[self.backButton];
+    
+    self.editSaveButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleBordered target:self action:@selector(setButton)];
+    
+    self.navigationItem.rightBarButtonItems = @[self.editSaveButton];
+            self.tableView.allowsSelection = NO;
     
 }
 
+- (void)setButton
+{
+    if ([self.editSaveButton.title isEqualToString:@"Edit"]) {
+        self.tableView.allowsSelection = YES;
+        //change title to Save
+        self.editSaveButton.title = @"Save";
+        
+        //reload data
+    
+            [self.tableView reloadData];
+        
+    }else {
+        //change title to Select
+        self.editSaveButton.title = @"Edit";
+        self.tableView.allowsSelection = NO;
+        
+        NSError * error;
+        //save to database
+        [self.personal.managedObjectContext save:&error];
+        
+    }
+}
+
+-(void)edit{
+    NSLog(@"Edit");
+}
+
+- (void)back{
+        NSLog(@"Back");
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self
@@ -187,18 +230,18 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 
 /*! Returns the major version of iOS, (i.e. for iOS 6.1.3 it returns 6)
  */
-NSUInteger DeviceSystemMajorVersion()
-{
-    static NSUInteger _deviceSystemMajorVersion = -1;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        
-        _deviceSystemMajorVersion =
-        [[[[UIDevice currentDevice] systemVersion] componentsSeparatedByString:@"."][0] integerValue];
-    });
-    
-    return _deviceSystemMajorVersion;
-}
+//NSUInteger DeviceSystemMajorVersion()
+//{
+//    static NSUInteger _deviceSystemMajorVersion = -1;
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        
+//        _deviceSystemMajorVersion =
+//        [[[[UIDevice currentDevice] systemVersion] componentsSeparatedByString:@"."][0] integerValue];
+//    });
+//    
+//    return _deviceSystemMajorVersion;
+//}
 
 #define EMBEDDED_DATE_PICKER (DeviceSystemMajorVersion() >= 7)
 
@@ -286,8 +329,10 @@ NSUInteger DeviceSystemMajorVersion()
     AABTableHeaderView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:headerIdentifier];
     if (!headerView) {
         headerView = [[AABTableHeaderView alloc] initWithTitle:@"" actionTitle:nil alignCenterY:YES reuseIdentifier:headerIdentifier];
-        headerView.labelTitle.font = [UIFont thinFontWithSize:28];
-        headerView.labelTitle.textAlignment = NSTextAlignmentCenter;
+         UIFont *font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+//        headerView.labelTitle.font = [UIFont thinFontWithSize:28];
+        headerView.labelTitle.font = font;
+        headerView.labelTitle.textAlignment = NSTextAlignmentLeft;
         headerView.labelTitle.textColor = [UIColor blackColor];
         headerView.backgroundView = [[UIView alloc] init];
         headerView.backgroundView.backgroundColor = [UIColor whiteColor];
@@ -308,7 +353,7 @@ NSUInteger DeviceSystemMajorVersion()
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-//#warning Potentially incomplete method implementation.
+    //#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 1;
 }
@@ -345,7 +390,7 @@ NSUInteger DeviceSystemMajorVersion()
     // update the cell's date string
     cell.detailTextLabel.text = [self.dateFormatter stringFromDate:targetedDatePicker.date];
     
-  //save to database
+    //save to database
     if (targetedCellIndexPath.row == kDateBirthRow) {
         self.personal.dateOfBirth = targetedDatePicker.date;
     }else if (targetedCellIndexPath.row == kDateSIMRow){
@@ -378,7 +423,7 @@ NSUInteger DeviceSystemMajorVersion()
         // the indexPath is the one containing the inline date picker
         cellIdentifier = kDatePickerID;     // the current/opened date picker cell
         cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-
+        
         return cell;
     }
     else if ([self indexPathHasDate:indexPath])
@@ -392,69 +437,69 @@ NSUInteger DeviceSystemMajorVersion()
         {
             modelRow--;
         }
-         NSDictionary *itemData = self.dataArray[modelRow];
+        NSDictionary *itemData = self.dataArray[modelRow];
         cell.textLabel.text = [itemData valueForKey:kTitleKey];
         cell.detailTextLabel.text = [self.dateFormatter stringFromDate:[itemData valueForKey:kDateKey]];
-
-
+        
+        
         return cell;
     }else if(indexPath.row == kAddressRow){
-     //cell address
+        //cell address
         cellIdentifier = kCellAddress;
     }
-        
-
+    
+    
     AABFormCell *cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
     
-        if (indexPath.section == 0) {
-            if (indexPath.row == 0) {
-                cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
-                cell.labelTitle.text = @"Name";
-//                cell.textValue.placeholder = @"e.g Jafar";
-                cell.textValue.text = self.personal.name;
-                cell.onTextValueReturn = ^(NSString *value){
-                    self.personal.name = value;
-                };
-                cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
-                cell.maxCharCount = 40;
-            }else if (indexPath.row == 1) {
-                cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
-                cell.labelTitle.text = @"E-Mail";
-//                cell.textValue.placeholder = @"e.g xxx@gmail.com";
-                cell.textValue.text = self.personal.email;
-                cell.onTextValueReturn = ^(NSString *value){
-                    if([self validateEmail:value]){
-                        self.personal.email = value;
-                    }
-                };
-                cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet],[NSCharacterSet characterSetWithCharactersInString:@".@"]];
-                cell.maxCharCount = 20;
-            }else if (indexPath.row == 2) {
-                cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
-                cell.labelTitle.text = @"Telephone";
-//                cell.textValue.placeholder = @"e.g 081122334455";
-                cell.textValue.text = self.personal.telephone;
-               cell.onTextValueReturn = ^(NSString *value){
-                   
-                   self.personal.telephone = value;
-                   
-                };
-                cell.characterSets = @[[NSCharacterSet characterSetWithCharactersInString:@"+0123456789"]];
-                cell.maxCharCount = 15;
+    if (indexPath.section == 0) {
+        if (indexPath.row == 0) {
+            cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
+            cell.labelTitle.text = @"Name";
+//            cell.textValue.placeholder = @"e.g Jafar";
+            cell.textValue.text = self.personal.name;
+            cell.onTextValueReturn = ^(NSString *value){
+                self.personal.name = value;
+            };
+            cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet]];
+            cell.maxCharCount = 40;
+        }else if (indexPath.row == 1) {
+            cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
+            cell.labelTitle.text = @"E-Mail";
+//            cell.textValue.placeholder = @"e.g xxx@gmail.com";
+            cell.textValue.text = self.personal.email;
+            cell.onTextValueReturn = ^(NSString *value){
+                if([self validateEmail:value]){
+                    self.personal.email = value;
+                }
+            };
+            cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet],[NSCharacterSet characterSetWithCharactersInString:@".@"]];
+            cell.maxCharCount = 20;
+        }else if (indexPath.row == 2) {
+            cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
+            cell.labelTitle.text = @"Telephone";
+//            cell.textValue.placeholder = @"e.g 081122334455";
+            cell.textValue.text = self.personal.telephone;
+            cell.onTextValueReturn = ^(NSString *value){
                 
-            }else if (indexPath.row == 3) {
-                NSLog(@"cellID : %@",cellIdentifier);
-                cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
-                cell.labelTitle.text = @"Address";
-//                cell.textValue.placeholder = @"Jl. Kacang,Setiabudi";
-                            cell.textValue.text = self.personal.address;
-                cell.onTextValueReturn = ^(NSString *value){
-                                    self.personal.address = value;
-                };
-                cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet],[NSCharacterSet characterSetWithCharactersInString:@".-/"]];
-                cell.maxCharCount = 200;
-            }
+                self.personal.telephone = value;
+                
+            };
+            cell.characterSets = @[[NSCharacterSet characterSetWithCharactersInString:@"+0123456789"]];
+            cell.maxCharCount = 15;
+            
+        }else if (indexPath.row == 3) {
+            NSLog(@"cellID : %@",cellIdentifier);
+            cell = [[AABFormCell alloc] initWithFormType:AABFormCellTypeTextInput reuseIdentifier:cellIdentifier];
+            cell.labelTitle.text = @"Address";
+//            cell.textValue.placeholder = @"Jl. Kacang,Setiabudi";
+            cell.textValue.text = self.personal.address;
+            cell.onTextValueReturn = ^(NSString *value){
+                self.personal.address = value;
+            };
+            cell.characterSets = @[[NSCharacterSet alphanumericCharacterSet], [NSCharacterSet whitespaceCharacterSet],[NSCharacterSet characterSetWithCharactersInString:@".-/"]];
+            cell.maxCharCount = 200;
         }
+    }
     
     // if we have a date picker open whose cell is above the cell we want to update,
     // then we have one more cell than the model allows
@@ -479,14 +524,18 @@ NSUInteger DeviceSystemMajorVersion()
     {
         // this cell is a non-date cell, just assign it's text label
         //
-//        cell.textLabel.text = [itemData valueForKey:kTitleKey];
+        //        cell.textLabel.text = [itemData valueForKey:kTitleKey];
     }else if ([cellIdentifier isEqualToString:kCellAddress])
     {
         // this cell is a non-date cell, just assign it's text label
         //
-//        cell.textLabel.text = [itemData valueForKey:kTitleKey];
+        //        cell.textLabel.text = [itemData valueForKey:kTitleKey];
     }
     
+    
+    if ([self.editSaveButton.title isEqualToString:@"Edit"]) {
+        cell.editingEnabled = NO;
+    }else cell.editingEnabled = YES;
 	return cell;
     
 }
@@ -494,18 +543,21 @@ NSUInteger DeviceSystemMajorVersion()
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-     if (cell.reuseIdentifier == kDateCellID)
-     {
-     if (EMBEDDED_DATE_PICKER)
-     [self displayInlineDatePickerForRowAtIndexPath:indexPath];
-     else
-     [self displayExternalDatePickerForRowAtIndexPath:indexPath];
-     }
-     else
-     {
-     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-     }
+    if ([self.editSaveButton.title isEqualToString:@"Edit"]) {
+        return;
+    }
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if (cell.reuseIdentifier == kDateCellID)
+    {
+        if (EMBEDDED_DATE_PICKER)
+            [self displayInlineDatePickerForRowAtIndexPath:indexPath];
+        else
+            [self displayExternalDatePickerForRowAtIndexPath:indexPath];
+    }
+    else
+    {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }
 }
 
 
@@ -610,7 +662,7 @@ NSUInteger DeviceSystemMajorVersion()
         [UIView animateWithDuration:kPickerAnimationDuration animations: ^{ self.pickerView.frame = endFrame; }
                          completion:^(BOOL finished) {
                              // add the "Done" button to the nav bar
-//                             self.navigationItem.rightBarButtonItem = self.doneButton;
+                             //                             self.navigationItem.rightBarButtonItem = self.doneButton;
                          }];
     }
 }
@@ -634,13 +686,13 @@ NSUInteger DeviceSystemMajorVersion()
     if ([identifier isEqualToString:@"ShowVehicle"]) {
         if (![self validate])  {
             //show alert that some data must be filled before next step
-//            NSString * message = @"Please fill ";
+            //            NSString * message = @"Please fill ";
             NSString *message = [[NSString alloc] init];
-//            message = @"Please fill ";
-
-
+            //            message = @"Please fill ";
+            
+            
             if([self.personal.name isEqualToString:@""] || !self.personal.name) {
-                 message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Name"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Name"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -649,7 +701,7 @@ NSUInteger DeviceSystemMajorVersion()
                 return NO;
             }
             if([self.personal.email isEqualToString:@""] || !self.personal.email) {
-                   message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Email"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Email"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -658,7 +710,7 @@ NSUInteger DeviceSystemMajorVersion()
                 return NO;
             }
             if([self.personal.telephone isEqualToString:@""] || !self.personal.telephone) {
-                  message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Telephone"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Telephone"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -686,7 +738,7 @@ NSUInteger DeviceSystemMajorVersion()
                 return NO;
             }
             if(!self.personal.simExpiredDate) {
-                      message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"SIM expired date"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"SIM expired date"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -694,20 +746,20 @@ NSUInteger DeviceSystemMajorVersion()
                 message = Nil;
                 return NO;
             }
-           //last check for telephone number
+            //last check for telephone number
             if(self.personal.telephone.length < 10){
                 [self showAlertWithTitle:@"Invalid input" message:@"Telephone number must be filled by minimum 10 characters"];
                 return NO;
             }
             
-           
+            
         }
         
     }
     return YES;
     
 }
-    
+
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -715,7 +767,7 @@ NSUInteger DeviceSystemMajorVersion()
         if ([self validate]) {
             //case data alreay fill correctly
             [[segue destinationViewController] setDelegate:self];
-                    [[segue destinationViewController] setPersonal:self.personal];
+            [[segue destinationViewController] setPersonal:self.personal];
         }else {
             //show alert that some data must be filled before next step
             NSString * message = @"Please fill ";
@@ -762,60 +814,68 @@ NSUInteger DeviceSystemMajorVersion()
     if(!self.personal.dateOfBirth) return value;
     if(!self.personal.simExpiredDate) return value;
     if([self.personal.address isEqualToString:@""] || !self.personal.address) return value;
-
-//    value =  != Nil;
-//    value &= self.personal.address && self.personal.email && self.personal.telephone && self.personal.dateOfBirth && self.personal.simExpiredDate;
+    
+    //    value =  != Nil;
+    //    value &= self.personal.address && self.personal.email && self.personal.telephone && self.personal.dateOfBirth && self.personal.simExpiredDate;
     
     return YES;
 }
 
-/*
+
 // Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+- (BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+//    return(YES);
+        return(NO);
 }
-*/
 
 /*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
+ // Override to support conditional editing of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+ {
+ // Return NO if you do not want the specified item to be editable.
+ return YES;
+ }
+ */
 
 /*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
+ // Override to support editing the table view.
+ - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+ {
+ if (editingStyle == UITableViewCellEditingStyleDelete) {
+ // Delete the row from the data source
+ [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+ } else if (editingStyle == UITableViewCellEditingStyleInsert) {
+ // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+ }
+ }
+ */
 
 /*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
+ // Override to support rearranging the table view.
+ - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+ {
+ }
+ */
 
 /*
-#pragma mark - Navigation
+ // Override to support conditional rearranging of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+ {
+ // Return NO if you do not want the item to be re-orderable.
+ return YES;
+ }
+ */
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+/*
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+ {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

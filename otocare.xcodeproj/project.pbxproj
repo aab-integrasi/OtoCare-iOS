@@ -104,6 +104,9 @@
 		B294C7E21999BE80003FE0AC /* Vehicle+Import.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7E11999BE80003FE0AC /* Vehicle+Import.m */; };
 		B294C7E51999DE7C003FE0AC /* Vehicle+Export.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7E41999DE7C003FE0AC /* Vehicle+Export.m */; };
 		B294C7E81999DE91003FE0AC /* Insurance+Export.m in Sources */ = {isa = PBXBuildFile; fileRef = B294C7E71999DE91003FE0AC /* Insurance+Export.m */; };
+		C8F6AB03199CCCB700A4F877 /* AABProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6AB02199CCCB700A4F877 /* AABProfileVC.m */; };
+		C8F6AB07199CF25B00A4F877 /* AABProfileDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6AB06199CF25B00A4F877 /* AABProfileDetailVC.m */; };
+		C8F6AB0A199CF27900A4F877 /* AABVehicleDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F6AB09199CF27900A4F877 /* AABVehicleDetailVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -294,6 +297,12 @@
 		B294C7E41999DE7C003FE0AC /* Vehicle+Export.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Vehicle+Export.m"; sourceTree = "<group>"; };
 		B294C7E61999DE91003FE0AC /* Insurance+Export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Insurance+Export.h"; sourceTree = "<group>"; };
 		B294C7E71999DE91003FE0AC /* Insurance+Export.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Insurance+Export.m"; sourceTree = "<group>"; };
+		C8F6AB01199CCCB700A4F877 /* AABProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AABProfileVC.h; sourceTree = "<group>"; };
+		C8F6AB02199CCCB700A4F877 /* AABProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AABProfileVC.m; sourceTree = "<group>"; };
+		C8F6AB05199CF25B00A4F877 /* AABProfileDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AABProfileDetailVC.h; sourceTree = "<group>"; };
+		C8F6AB06199CF25B00A4F877 /* AABProfileDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AABProfileDetailVC.m; sourceTree = "<group>"; };
+		C8F6AB08199CF27900A4F877 /* AABVehicleDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AABVehicleDetailVC.h; sourceTree = "<group>"; };
+		C8F6AB09199CF27900A4F877 /* AABVehicleDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AABVehicleDetailVC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -497,6 +506,7 @@
 		B294C69A19907876003FE0AC /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				C8F6AB04199CCCBC00A4F877 /* Main */,
 				B21A1B97199C6BA400420BFB /* Edit Profile */,
 				B274BD97198F7738001FBFDC /* AABSecondViewController.h */,
 				B274BD98198F7738001FBFDC /* AABSecondViewController.m */,
@@ -796,6 +806,19 @@
 			name = extended;
 			sourceTree = "<group>";
 		};
+		C8F6AB04199CCCBC00A4F877 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				C8F6AB01199CCCB700A4F877 /* AABProfileVC.h */,
+				C8F6AB02199CCCB700A4F877 /* AABProfileVC.m */,
+				C8F6AB05199CF25B00A4F877 /* AABProfileDetailVC.h */,
+				C8F6AB06199CF25B00A4F877 /* AABProfileDetailVC.m */,
+				C8F6AB08199CF27900A4F877 /* AABVehicleDetailVC.h */,
+				C8F6AB09199CF27900A4F877 /* AABVehicleDetailVC.m */,
+			);
+			name = Main;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -912,6 +935,7 @@
 				B294C72F19907EE9003FE0AC /* AFURLConnectionOperation.m in Sources */,
 				B294C7A21997DD5E003FE0AC /* Model.xcdatamodeld in Sources */,
 				B21A1B90199BBFE100420BFB /* DemoTableController.m in Sources */,
+				C8F6AB0A199CF27900A4F877 /* AABVehicleDetailVC.m in Sources */,
 				B294C79F1997CD40003FE0AC /* AABInsuranceViewController.m in Sources */,
 				B294C782199457B8003FE0AC /* UIFont+IMMS.m in Sources */,
 				B294C697198F8764003FE0AC /* AABHomePartThree.m in Sources */,
@@ -944,6 +968,7 @@
 				B274BDB9198F8183001FBFDC /* AABHomePartOne.m in Sources */,
 				B294C77C19945723003FE0AC /* MBProgressHUD.m in Sources */,
 				B294C75C19908972003FE0AC /* AABGPlace.m in Sources */,
+				C8F6AB07199CF25B00A4F877 /* AABProfileDetailVC.m in Sources */,
 				B21A1B93199BE17200420BFB /* AABPersonalInformationViewController.m in Sources */,
 				B294C7D31999A4EA003FE0AC /* Insurance.m in Sources */,
 				B274BD90198F7738001FBFDC /* AABAppDelegate.m in Sources */,
@@ -965,6 +990,7 @@
 				B294C7E81999DE91003FE0AC /* Insurance+Export.m in Sources */,
 				B294C7B8199890C7003FE0AC /* Personal+Export.m in Sources */,
 				B294C74B19907EE9003FE0AC /* NSString+NamingConvention.m in Sources */,
+				C8F6AB03199CCCB700A4F877 /* AABProfileVC.m in Sources */,
 				B294C72A19907EE9003FE0AC /* AFHTTPRequestOperation.m in Sources */,
 				B294C7E51999DE7C003FE0AC /* Vehicle+Export.m in Sources */,
 				B294C75219907FBA003FE0AC /* AABConstants.m in Sources */,

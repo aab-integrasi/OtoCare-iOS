@@ -41,7 +41,9 @@
         //case not then goto to New profile page
         //open new profile
         AABProfileViewController *profile = [self.storyboard instantiateViewControllerWithIdentifier:@"AABProfileViewController"];
-        [self.navigationController presentViewController:profile animated:YES completion:nil];
+//        [self presentViewController:profile animated:YES completion:nil];
+        UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:profile];
+        [self presentViewController:navCon animated:YES completion:nil];
         
     }else {
         //get data from database
@@ -49,7 +51,10 @@
         //case already then go to Profile page
         //AABPersonalViewController
         AABPersonalViewController *profil = [self.storyboard instantiateViewControllerWithIdentifier:@"AABPersonalViewController"];
-        [self.navigationController presentViewController:profil animated:YES completion:nil];
+//        [self.parentViewController.navigationController presentViewController:profil animated:YES completion:nil];
+          [self presentViewController:profil animated:YES completion:nil];
+//        UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:profil];
+//        [self.parentViewController.navigationController presentViewController:navCon animated:YES completion:nil];
     }
     
     

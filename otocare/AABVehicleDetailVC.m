@@ -1,12 +1,13 @@
 //
-//  AABVehicleViewController.m
+//  AABVehicleDetailVC.m
 //  otocare
 //
-//  Created by Benny Susilo on 8/10/14.
+//  Created by Asuransi Astra Buana on 8/14/14.
 //  Copyright (c) 2014 PT. Asuransi Astra Buana. All rights reserved.
 //
 
-#import "AABVehicleViewController.h"
+#import "AABVehicleDetailVC.h"
+
 #import "AABTableHeaderView.h"
 #import "AABFormCell.h"
 
@@ -36,12 +37,15 @@ static NSString *kCellAddress = @"cellAddress";     // the remaining cells at th
 static NSString *kCell = @"cell";     // the remaining cells at the end
 
 
-@interface AABVehicleViewController () <UITableViewDataSource, UITableViewDelegate,UIPopoverControllerDelegate, AABOptionChooserDelegate,FPPopoverControllerDelegate>
+@interface AABVehicleDetailVC () <UITableViewDataSource, UITableViewDelegate,UIPopoverControllerDelegate, AABOptionChooserDelegate,FPPopoverControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIDatePicker *pickerView;
 
 @property (nonatomic, strong) NSArray *dataArray;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) FPPopoverController *popover;
+
+@property (nonatomic, strong) UIBarButtonItem *backButton;
+@property (nonatomic, strong) UIBarButtonItem *editSaveButton;
 
 // keep track which indexPath points to the cell with UIDatePicker
 @property (nonatomic, strong) NSIndexPath *datePickerIndexPath;
@@ -50,7 +54,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 
 @end
 
-@implementation AABVehicleViewController
+@implementation AABVehicleDetailVC
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -132,11 +136,11 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                                                object:nil];
     //create new vehicle object
     if (!self.vehicle) {
-//        //create vehicle
-//        NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
-//        
-//        //create new personal
-//        self.vehicle = [Vehicle newVehicleInContext:context];
+        //        //create vehicle
+        //        NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+        //
+        //        //create new personal
+        //        self.vehicle = [Vehicle newVehicleInContext:context];
         //check from database
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Vehicle"];
         request.returnsObjectsAsFaults = YES;
@@ -172,6 +176,47 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         
     }
     self.dataArray = @[policeNum,viBrand,viType,viYear,chassis,engine,stnk];
+
+
+    self.backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:self action:@selector(back)];
+    
+    self.navigationItem.leftBarButtonItems = @[self.backButton];
+    
+    
+    self.editSaveButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleBordered target:self action:@selector(setButton)];
+    
+    self.navigationItem.rightBarButtonItems = @[self.editSaveButton];
+}
+
+- (void)setButton
+{
+    if ([self.editSaveButton.title isEqualToString:@"Edit"]) {
+        self.tableView.allowsSelection = YES;
+        //change title to Save
+        self.editSaveButton.title = @"Save";
+        
+        //reload data
+        if ([self isViewLoaded]) {
+            [self.tableView reloadData];
+        }
+        
+    }else {
+        //change title to Select
+        self.editSaveButton.title = @"Edit";
+        self.tableView.allowsSelection = NO;
+        
+        
+        
+    }
+}
+
+-(void)edit{
+    NSLog(@"Edit");
+}
+
+- (void)back{
+    NSLog(@"Back");
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)dealloc
@@ -280,8 +325,11 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     AABTableHeaderView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:headerIdentifier];
     if (!headerView) {
         headerView = [[AABTableHeaderView alloc] initWithTitle:@"" actionTitle:nil alignCenterY:YES reuseIdentifier:headerIdentifier];
-        headerView.labelTitle.font = [UIFont thinFontWithSize:28];
-        headerView.labelTitle.textAlignment = NSTextAlignmentCenter;
+//        headerView.labelTitle.font = [UIFont thinFontWithSize:28];
+        UIFont *font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+        //        headerView.labelTitle.font = [UIFont thinFontWithSize:28];
+        headerView.labelTitle.font = font;
+        headerView.labelTitle.textAlignment = NSTextAlignmentLeft;
         headerView.labelTitle.textColor = [UIColor blackColor];
         headerView.backgroundView = [[UIView alloc] init];
         headerView.backgroundView.backgroundColor = [UIColor whiteColor];
@@ -473,12 +521,21 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         //        cell.textLabel.text = [itemData valueForKey:kTitleKey];
     }
     
+    if ([self.editSaveButton.title isEqualToString:@"Edit"]) {
+        cell.editingEnabled = NO;
+    }else cell.editingEnabled = YES;
+    
 	return cell;
     
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+    if ([self.editSaveButton.title isEqualToString:@"Edit"]) {
+        return;
+    }
+    
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if (cell.reuseIdentifier == kDateCellID)
     {

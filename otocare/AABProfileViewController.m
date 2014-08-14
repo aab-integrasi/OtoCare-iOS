@@ -8,7 +8,7 @@
 
 #import "AABProfileViewController.h"
 #import "Reachability/Reachability.h"
- #import <SystemConfiguration/SystemConfiguration.h>
+#import <SystemConfiguration/SystemConfiguration.h>
 #import "AABHTTPClient.h"
 #import "Personal.h"
 #import "Personal+Extended.h"
@@ -18,6 +18,7 @@
 #import "MBProgressHUD.h"
 #import "AABConstants.h"
 #import "Personal+Import.h"
+#import "AABPersonalViewController.h"
 
 @interface AABProfileViewController ()<MBProgressHUDDelegate>
 
@@ -62,10 +63,45 @@
     self.gardaCustomer = !sender.on;
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    //check from database
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Personal"];
+    request.returnsObjectsAsFaults = YES;
+    
+    NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+    // Generate data
+    NSError *error;
+    NSArray * result = [context executeFetchRequest:request error:&error];
+    if (error){
+        NSLog(@"Error Loading Data : %@",[error description]);
+    }
+    
+    if ([result count]) {
+        //get data from database
+        NSLog(@"Data Exist");
+        //case already then go to Profile page
+        //AABPersonalViewController
+        AABPersonalViewController *profil = [self.storyboard instantiateViewControllerWithIdentifier:@"AABPersonalViewController"];
+        //        [self.parentViewController.navigationController presentViewController:profil animated:YES completion:nil];
+        //        [self.tabBarController presentViewController:profil animated:YES completion:nil];
+//        UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:profil];
+        
+        [self presentViewController:profil animated:YES completion:nil];
+//        return;
+        //                [self presentViewController:navCon animated:YES completion:nil];
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    
+    //check if there is data on database, case exist, then override the view vontroller
+
     
     //set no for default
     self.gardaCustomer = NO;
@@ -80,38 +116,38 @@
     //register keyboard
     [self registerForKeyboardNotifications];
     
-    //check from database
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Personal"];
-    request.returnsObjectsAsFaults = YES;
-    
-    NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
-    // Generate data
-    NSError *error;
-    NSArray * result = [context executeFetchRequest:request error:&error];
-    if (error){
-        NSLog(@"Error Loading Data : %@",[error description]);
-    }
-    
-    if (![result count]) {
-        //case there is no data on database
-        //create new personal information
-        if (!self.personal) {
-            //create new personal
-            self.personal = [Personal newPersonalInContext:context];
-        }
-    }else {
-        //get data from database
-        self.personal = [result lastObject];
-        
-        //get vehicle
-        //get vehicle object from personal
-        NSArray * objects = [self.personal.vehicle allObjects];
-        
-        if ([objects count]) {
-            //save to local
-            self.vehicle = [objects  lastObject];
-        }
-    }
+//    //check from database
+//    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Personal"];
+//    request.returnsObjectsAsFaults = YES;
+//    
+//    NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+//    // Generate data
+//    NSError *error;
+//    NSArray * result = [context executeFetchRequest:request error:&error];
+//    if (error){
+//        NSLog(@"Error Loading Data : %@",[error description]);
+//    }
+//    
+//    if (![result count]) {
+//        //case there is no data on database
+//        //create new personal information
+//        if (!self.personal) {
+//            //create new personal
+//            self.personal = [Personal newPersonalInContext:context];
+//        }
+//    }else {
+//        //get data from database
+//        self.personal = [result lastObject];
+//        
+//        //get vehicle
+//        //get vehicle object from personal
+//        NSArray * objects = [self.personal.vehicle allObjects];
+//        
+//        if ([objects count]) {
+//            //save to local
+//            self.vehicle = [objects  lastObject];
+//        }
+//    }
     
     //case if already have data in profile, then
 }
@@ -157,11 +193,11 @@
 }
 
 - (IBAction)cancelButton:(id)sender {
-//    if(self.personal){
-//        //roolback database
-//        [self.personal.managedObjectContext rollback];
-//        self.personal = Nil;
-//    }
+    if(self.personal){
+        //roolback database
+        [self.personal.managedObjectContext rollback];
+        self.personal = Nil;
+    }
 
     [self dismissViewControllerAnimated:YES completion:Nil];
 }

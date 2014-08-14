@@ -11,6 +11,8 @@
 #import "AABProfileTableViewController.h"
 #import "AABVehicleViewController.h"
 #import "AABInsuranceViewController.h"
+#import "AABDBManager.h"
+#import "AABProfileViewController.h"
 
 @interface AABPersonalViewController ()
 
@@ -35,6 +37,30 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    //check from database
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Personal"];
+    request.returnsObjectsAsFaults = YES;
+    
+    NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+    // Generate data
+    NSError *error;
+    NSArray * result = [context executeFetchRequest:request error:&error];
+    if (error){
+        NSLog(@"Error Loading Data : %@",[error description]);
+    }
+    
+    if (![result count]) {
+        //case there is no data on database
+        
+        //case not then goto to New profile page
+        //open new profile
+        AABProfileViewController *profile = [self.storyboard instantiateViewControllerWithIdentifier:@"AABProfileViewController"];
+        //        [self presentViewController:profile animated:YES completion:nil];
+        UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:profile];
+        [self.tabBarController.navigationController presentViewController:navCon animated:YES completion:nil];
+        
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning
