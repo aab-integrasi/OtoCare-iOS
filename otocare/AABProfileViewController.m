@@ -24,6 +24,7 @@
 @property (nonatomic,strong) MBProgressHUD *HUD;
 @property (nonatomic,strong) Vehicle * vehicle;
 @property (nonatomic) BOOL gardaCustomer;
+@property (nonatomic) BOOL loading;
 
 @end
 
@@ -68,6 +69,7 @@
     
     //set no for default
     self.gardaCustomer = NO;
+    self.loading = NO;
 //    self.policeNumber.userInteractionEnabled;
     self.engineNumber.enabled = NO;
     self.chassisNumber.enabled = NO;
@@ -260,11 +262,14 @@
         
         _HUD.labelText = @"Submiting Data";
         
-        
+                self.loading = YES;
         // Show the HUD while the provided method executes in a new thread
         [_HUD showWhileExecuting:@selector(sending) onTarget:self withObject:nil animated:YES];
         
         
+    }else {
+        //release loading
+        self.loading = NO;
     }
     
 }
@@ -288,6 +293,10 @@
         [formatted setObject:self.isNotCustomer.on?@"true":@"false" forKey:@"isNotCustomer"];
         NSLog(@"formatted : %@",[formatted description]);
         [self sendData:formatted];
+        self.loading = YES;
+        while (self.loading) {
+            usleep(5000);
+        }
     }
 }
 
@@ -319,7 +328,7 @@
 //    [client postJSONWithPath:@"otocare/submit"
 
     
-    [client getJSONWithPath:@"aab/loginotocare.php" parameters:params success:^(NSDictionary *jsonData, int statusCode){
+    [client getJSONWithPath:@"aab/loginotocare3.php" parameters:params success:^(NSDictionary *jsonData, int statusCode){
         [self showAlertWithTitle:@"Upload Success" message:@"Your data has been submitted successfully"];
         NSLog(@"Upload Success");
         [self successSubmit:jsonData];
