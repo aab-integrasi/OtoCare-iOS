@@ -12,12 +12,17 @@
 #import "AABDBManager.h"
 #import "AABAuthManager.h"
 #import "AABHTTPClient.h"
+#import "UIColor+AAB.h"
 
 @implementation AABAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    
+             [[UINavigationBar appearance] setBarTintColor:[UIColor AABBlue]];
+    [[UINavigationBar appearance] setTitleTextAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                           [UIColor whiteColor], NSForegroundColorAttributeName,
+                                                            nil]];
+
     
 //    if (AABGoogleAPIKey == Nil) {
 //        [AABConstants initialize];

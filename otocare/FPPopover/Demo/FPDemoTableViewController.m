@@ -9,6 +9,7 @@
 #import "FPDemoTableViewController.h"
 #import "FPPopoverController.h"
 #import "DemoTableController.h"
+#import "UIColor+AAB.h"
 
 @interface FPDemoTableViewController ()
 
@@ -106,6 +107,7 @@
     [button addTarget:self action:@selector(popover:) forControlEvents:UIControlEventTouchUpInside];
     cell.accessoryView = button;
     cell.textLabel.text = [NSString stringWithFormat:@"Row %d",indexPath.row];
+                cell.textLabel.textColor = [UIColor AABDeepBlue];
     return cell;
 }
 

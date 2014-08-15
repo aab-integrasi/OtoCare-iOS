@@ -8,6 +8,7 @@
 
 #import "DemoTableController.h"
 #import "FPViewController.h"
+#import "UIColor+AAB.h"
 @interface DemoTableController ()
 
 @end
@@ -48,6 +49,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
     cell.textLabel.text = [self.data objectAtIndex:indexPath.row];
+                cell.textLabel.textColor = [UIColor AABDeepBlue];
 //    cell.textLabel.text = [NSString stringWithFormat:@"cell %d",indexPath.row];
     
     return cell;

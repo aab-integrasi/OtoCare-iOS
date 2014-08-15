@@ -236,9 +236,7 @@
                 if(self.engineNumber.text) vehicle.policeNumber = self.engineNumber.text;
             }
         }
-//        if (self.personal) {
-//             [profile setPersonal:self.personal];
-//        }
+
         [self presentViewController:profile animated:YES completion:nil];
         
     }else {
@@ -309,30 +307,64 @@
     }
     
 }
+- (void)performSendJSON
+{
+    //start uploading
+    if (!_HUD) {
+        // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
+        _HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+    }
+    
+    // Back to indeterminate mode
+    _HUD.mode = MBProgressHUDModeIndeterminate;
+    
+    // Add HUD to screen
+    [self.navigationController.view addSubview:_HUD];
+    
+    
+    
+    // Regisete for HUD callbacks so we can remove it from the window at the right time
+    _HUD.delegate = self;
+    
+    _HUD.labelText = @"Submiting Data";
+    
+    self.loading = YES;
+    self.chassisNumber.text = @"AABJSONPARSE";
+    self.engineNumber.text = @"123";
+    
+    // Show the HUD while the provided method executes in a new thread
+    [_HUD showWhileExecuting:@selector(sending) onTarget:self withObject:nil animated:YES];
+    
+}
 
 - (void)sending {
-    //check internet connection
-    if (![self connected]) {
-        //
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You can not perform this process when your mobile phone is offline. Please try again later." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert show];
-        // not connected
-        NSLog(@"Not connected");
-    } else {
-        // connected, do some internet stuff
-        NSLog(@"Connected");
-        //formatting data & send
-        NSMutableDictionary * formatted = [NSMutableDictionary dictionary];
-        
-        [formatted setObject:self.engineNumber.text forKey:VEHICLE_ENGINE_NUMBER];
-        [formatted setObject:self.chassisNumber.text forKey:VEHICLE_CHASSIS_NUMBER];
-        [formatted setObject:self.isNotCustomer.on?@"true":@"false" forKey:@"isNotCustomer"];
-        NSLog(@"formatted : %@",[formatted description]);
-        [self sendData:formatted];
-        self.loading = YES;
-        while (self.loading) {
-            usleep(5000);
+    @try {
+        //check internet connection
+        if (![self connected]) {
+            //
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You can not perform this process when your mobile phone is offline. Please try again later." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alert show];
+            // not connected
+            NSLog(@"Not connected");
+        } else {
+            // connected, do some internet stuff
+            NSLog(@"Connected");
+            //formatting data & send
+            NSMutableDictionary * formatted = [NSMutableDictionary dictionary];
+            
+            [formatted setObject:self.engineNumber.text forKey:VEHICLE_ENGINE_NUMBER];
+            [formatted setObject:self.chassisNumber.text forKey:VEHICLE_CHASSIS_NUMBER];
+            [formatted setObject:self.isNotCustomer.on?@"true":@"false" forKey:@"isNotCustomer"];
+            NSLog(@"formatted : %@",[formatted description]);
+            [self sendData:formatted];
+            self.loading = YES;
+            while (self.loading) {
+                usleep(5000);
+            }
         }
+    }
+    @catch (NSException *exception) {
+        NSLog(@"exeption : %@",[exception description]);
     }
 }
 

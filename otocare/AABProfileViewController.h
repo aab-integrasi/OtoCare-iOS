@@ -16,5 +16,6 @@
 @property (weak, nonatomic) IBOutlet UISwitch *isNotCustomer;
 @property (nonatomic, strong) Personal *personal;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollViewController;
+- (void)performSendJSON;
 
 @end

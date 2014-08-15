@@ -13,6 +13,7 @@
 #import "AABInsuranceViewController.h"
 #import "AABDBManager.h"
 #import "AABProfileViewController.h"
+#import "UIColor+AAB.h"
 
 @interface AABPersonalViewController ()
 
@@ -176,6 +177,7 @@
 {
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"profileCell" forIndexPath:indexPath];
     
+                cell.textLabel.textColor = [UIColor AABDeepBlue];
     if(indexPath.section == 0){
     // Get the event at the row selected and display its title
     if(indexPath.row == 0){

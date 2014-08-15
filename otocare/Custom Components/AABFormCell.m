@@ -9,6 +9,7 @@
 #import "AABFormCell.h"
 #import "UIFont+IMMS.h"
 #import "UIColor+IMMS.h"
+#import "UIColor+AAB.h"
 
 @interface AABFormCell()<UITextFieldDelegate>
 
@@ -43,7 +44,7 @@
     self.labelTitle = [[UILabel alloc] init];
     self.labelTitle.textAlignment = NSTextAlignmentLeft;
     self.labelTitle.font = font;
-    self.labelTitle.textColor = [UIColor blackColor];
+    self.labelTitle.textColor = [UIColor AABDeepBlue];
     [self.labelTitle setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.contentView addSubview:self.labelTitle];
     
@@ -134,6 +135,7 @@
             [self.button addTarget:self action:@selector(push) forControlEvents:UIControlEventTouchUpInside];
             break;
     }
+    self.labelValue.textColor = self.textValue.textColor = [UIColor AABThinBlue];
     
     [self setupUI];
     

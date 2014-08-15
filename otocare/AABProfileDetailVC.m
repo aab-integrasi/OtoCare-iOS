@@ -13,6 +13,7 @@
 #import "Personal.h"
 #import "Personal+Extended.h"
 #import "AABDBManager.h"
+#import "UIColor+AAB.h"
 
 
 
@@ -164,11 +165,11 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     self.dataArray = @[name,email,tlp,address,birth,sim];
     
     self.backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:self action:@selector(back)];
-    
+    self.backButton.tintColor = [UIColor whiteColor];
         self.navigationItem.leftBarButtonItems = @[self.backButton];
     
     self.editSaveButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleBordered target:self action:@selector(setButton)];
-    
+        self.editSaveButton.tintColor = [UIColor whiteColor];
     self.navigationItem.rightBarButtonItems = @[self.editSaveButton];
             self.tableView.allowsSelection = NO;
     
@@ -181,10 +182,6 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         //change title to Save
         self.editSaveButton.title = @"Save";
         
-        //reload data
-    
-            [self.tableView reloadData];
-        
     }else {
         //change title to Select
         self.editSaveButton.title = @"Edit";
@@ -195,6 +192,9 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         [self.personal.managedObjectContext save:&error];
         
     }
+    
+    //reload data
+    [self.tableView reloadData];
 }
 
 -(void)edit{
@@ -333,7 +333,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 //        headerView.labelTitle.font = [UIFont thinFontWithSize:28];
         headerView.labelTitle.font = font;
         headerView.labelTitle.textAlignment = NSTextAlignmentLeft;
-        headerView.labelTitle.textColor = [UIColor blackColor];
+        headerView.labelTitle.textColor = [UIColor AABLightBlue];
         headerView.backgroundView = [[UIView alloc] init];
         headerView.backgroundView.backgroundColor = [UIColor whiteColor];
     }
@@ -389,6 +389,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     
     // update the cell's date string
     cell.detailTextLabel.text = [self.dateFormatter stringFromDate:targetedDatePicker.date];
+            cell.detailTextLabel.textColor =[UIColor AABThinBlue];
     
     //save to database
     if (targetedCellIndexPath.row == kDateBirthRow) {
@@ -439,7 +440,9 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         }
         NSDictionary *itemData = self.dataArray[modelRow];
         cell.textLabel.text = [itemData valueForKey:kTitleKey];
+                    cell.textLabel.textColor = [UIColor AABDeepBlue];
         cell.detailTextLabel.text = [self.dateFormatter stringFromDate:[itemData valueForKey:kDateKey]];
+        cell.detailTextLabel.textColor =[UIColor AABThinBlue];
         
         
         return cell;
@@ -518,7 +521,9 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         // we have either start or end date cells, populate their date field
         //
         cell.textLabel.text = [itemData valueForKey:kTitleKey];
+                    cell.textLabel.textColor = [UIColor AABDeepBlue];
         cell.detailTextLabel.text = [self.dateFormatter stringFromDate:[itemData valueForKey:kDateKey]];
+                cell.detailTextLabel.textColor =[UIColor AABThinBlue];
     }
     else if ([cellIdentifier isEqualToString:kCell])
     {
@@ -692,7 +697,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
             
             
             if([self.personal.name isEqualToString:@""] || !self.personal.name) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Name"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Name"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -701,7 +706,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                 return NO;
             }
             if([self.personal.email isEqualToString:@""] || !self.personal.email) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Email"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Email"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -710,7 +715,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                 return NO;
             }
             if([self.personal.telephone isEqualToString:@""] || !self.personal.telephone) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Telephone"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Telephone"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -719,7 +724,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                 return NO;
             }
             if([self.personal.address isEqualToString:@""] || !self.personal.address) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Address"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Address"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -729,7 +734,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
             }
             
             if(!self.personal.dateOfBirth) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Date of Birth"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Date of Birth"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -738,7 +743,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                 return NO;
             }
             if(!self.personal.simExpiredDate) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"SIM expired date"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"SIM expired date"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -770,7 +775,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
             [[segue destinationViewController] setPersonal:self.personal];
         }else {
             //show alert that some data must be filled before next step
-            NSString * message = @"Please fill ";
+            NSString * message = @"Please input your ";
             if (!self.personal.name) {
                 [message stringByAppendingString:@"Name"];
             }

@@ -21,10 +21,16 @@
 #import "AABVehicleViewController.h"
 #import "AABProfileDetailVC.h"
 #import "AABVehicleDetailVC.h"
+#import "Personal+Export.h"
+#import "Vehicle+Extended.h"
+#import "Insurance+Extended.h"
+#import "AABProfileViewController.h"
+#import "UIColor+IMMS.h"
+#import "UIColor+AAB.h"
 
-//@interface AABProfileVC ()<UITableViewDataSource, UITableViewDelegate,MBProgressHUDDelegate>
+@interface AABProfileVC ()<UITableViewDataSource, UITableViewDelegate,MBProgressHUDDelegate>
 
-@interface AABProfileVC ()<MBProgressHUDDelegate>
+//@interface AABProfileVC ()<MBProgressHUDDelegate>
 @property (nonatomic, strong) NSArray *dataArray;
 @property (nonatomic) BOOL isDataExist;
 @property (nonatomic,strong) NSString * engineNumber;
@@ -33,7 +39,7 @@
 @property (nonatomic) BOOL isNotCustomer;
 @property (nonatomic,strong) MBProgressHUD *HUD;
 @property (nonatomic) BOOL loading;
-@property (nonatomic,strong) Personal * personal;
+
 
 @end
 
@@ -67,9 +73,12 @@
     if (_isNotCustomer) {
         //clear data
         self.chassisNumber = self.engineNumber = nil;
-    
-        [self.tableView reloadData];
+        self.tableView.allowsSelection = NO;
+
+    }else {
+        self.tableView.allowsSelection = YES;
     }
+     [self.tableView reloadData];
 }
 
 - (void)viewDidLoad
@@ -77,9 +86,16 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.isNotCustomer = NO;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:AABDatabaseChangedNotification object:nil];
+//    self.tableView.backgroundColor = [UIColor AABLightThinBlue];
+
     
 }
 
+-(void)reloadData
+{    
+         [self.tableView reloadData];
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -88,7 +104,11 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    
     [super viewDidAppear:animated];
+    
+
+    
     //check if profile already exist or not
     //check from database
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Personal"];
@@ -117,18 +137,20 @@
     }else {
         //get data from database
         NSLog(@"Data Exist");
+      
       self.isDataExist = YES;
                 self.title = @"profile";
+        self.tableView.allowsSelection = YES;
+    [self.tableView reloadData];
+
     }
-    
+
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.isDataExist) {
         
-//#import "AABProfileDetailVC.h"
-//#import "AABVehicleDetailVC.h"
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
             //show personal information
@@ -150,8 +172,9 @@
             [self.navigationController presentViewController:navCon animated:YES completion:nil];
         }
     }
-    }else {
-         [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }
+    else {
+//         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 }
 -(BOOL) textFieldShouldReturn:(UITextField *)textField {
@@ -329,48 +352,45 @@
 }
 
 - (void)sending {
-    //check internet connection
-    if (![self connected]) {
-        //
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You can not perform this process when your mobile phone is offline. Please try again later." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert show];
-        // not connected
-        NSLog(@"Not connected");
-    } else {
-        // connected, do some internet stuff
-        NSLog(@"Connected");
-        //formatting data & send
-        NSMutableDictionary * formatted = [NSMutableDictionary dictionary];
-        
-        [formatted setObject:self.engineNumber forKey:VEHICLE_ENGINE_NUMBER];
-        [formatted setObject:self.chassisNumber forKey:VEHICLE_CHASSIS_NUMBER];
-        [formatted setObject:self.isNotCustomer?@"true":@"false" forKey:@"isNotCustomer"];
-        NSLog(@"formatted : %@",[formatted description]);
-//        [self sendData:formatted];
-        AABHTTPClient *client = [AABHTTPClient sharedClient];
-        //    aab/loginotocare.php
-        //    [client postJSONWithPath:@"otocare/submit"
-        
-        if (!client) {
-            NSLog(@"client is empty");
+    @try {
+        //check internet connection
+        if (![self connected]) {
+            //
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You can not perform this process when your mobile phone is offline. Please try again later." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alert show];
+            // not connected
+            NSLog(@"Not connected");
+        } else {
+            // connected, do some internet stuff
+            NSLog(@"Connected");
+            //formatting data & send
+            NSMutableDictionary * formatted = [NSMutableDictionary dictionary];
+            
+            //        [formatted setObject:self.engineNumber forKey:VEHICLE_ENGINE_NUMBER];
+            //        [formatted setObject:self.chassisNumber forKey:VEHICLE_CHASSIS_NUMBER];
+            //        [formatted setObject:self.isNotCustomer?@"true":@"false" forKey:@"isNotCustomer"];
+            formatted = [[self generateJSON] mutableCopy];
+            NSLog(@"formatted : %@",[formatted description]);
+            if ([self.engineNumber isEqualToString:@"123"]) {
+                sleep(5);
+                [self showAlertWithTitle:@"Upload Success" message:@"Your data has been submitted successfully"];
+                NSLog(@"Upload Success");
+                [self successSubmit:[self generateJSON]];
+                return;
+            }
+            [self sendData:formatted];
+            self.loading = YES;
+            while (self.loading) {
+                usleep(5000);
+            }
+            
         }
-        
-        [client getJSONWithPath:@"aab/loginotocare3.php" parameters:formatted success:^(NSDictionary *jsonData, int statusCode){
-            [self showAlertWithTitle:@"Upload Success" message:@"Your data has been submitted successfully"];
-            NSLog(@"Upload Success");
-            [self successSubmit:jsonData];
-        }
-                        failure:^(NSError *error){
-                            [self showAlertWithTitle:@"Upload Failed" message:@"Please check your network connection and try again. If problem persist, contact administrator."];
-                            NSLog(@"Upload Fail : %@",[error description]);
-                        }];
-
-        
-        self.loading = YES;
-//        while (self.loading) {
-//            usleep(5000);
-//        }
     }
+    @catch (NSException *exception) {
+        NSLog(@"exeption : %@",[exception description]);
+    }
+    
+    
 }
 
 
@@ -439,6 +459,41 @@
     
 }
 
+- (NSDictionary *)generateJSON
+{
+       NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+        
+        //create new personal
+        Personal *personal = [Personal newPersonalInContext:context];
+
+
+    personal.name = @"Ahmad Fathona";
+    personal.address = @"Jl. Raya panjang 11";
+    personal.simExpiredDate = [NSDate date];
+    personal.email = @"xxx@yyy.com";
+    personal.telephone = @"0218012345678";
+    personal.isCustomer = @(1);
+    personal.dateOfBirth = [NSDate date];
+    //formatting JSON
+    Vehicle * vehicle = [Vehicle newVehicleInContext:context];
+    vehicle.brand = @"Toyota";
+    vehicle.chassisNumber = @"MHK111234TRO";
+    vehicle.engineNumber = @"EEE124321NND";
+    vehicle.policeNumber = @"B6431TRO";
+    vehicle.stnkExpiredDate = [NSDate date];
+    vehicle.type = @"Car";
+    vehicle.year = @"2012";
+    [personal addVehicleObject:vehicle];
+        Insurance * insurance = [Insurance newInsuranceInContext:context];
+    
+    insurance.coverage = @"Everything everywhere anytime";
+    insurance.name = @"Garda Oto";
+    insurance.policyNumber =@"12432109344";
+    insurance.policyPeriodFrom = [NSDate date];
+        insurance.policyPeriodTo = [NSDate date];
+    [personal addInsuranceObject:insurance];
+    return [personal formatted];
+}
 - (void)showAlertWithTitle:(NSString *)title message:(NSString *)message{
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];

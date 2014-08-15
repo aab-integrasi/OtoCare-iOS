@@ -10,6 +10,7 @@
 #import "AABConstants.h"
 #import "AABFormCell.h"
 #import "UIFont+IMMS.h"
+#import "UIColor+AAB.h"
 
 
 @interface AABOptionChooserViewController ()
@@ -35,6 +36,7 @@
     }
     
     cell.textLabel.text = [self.options[indexPath.row] description];
+            cell.textLabel.textColor = [UIColor AABDeepBlue];
     cell.accessoryType = [self.selectedIndexPath isEqual:indexPath] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
     
     if (indexPath.row == 0 && self.firstRowIsSpecial) {

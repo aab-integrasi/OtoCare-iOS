@@ -613,7 +613,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1093" y="-238"/>
+            <point key="canvasLocation" x="1619" y="-238"/>
         </scene>
         <!--Profile Table View Controller - Profile-->
         <scene sceneID="vxR-Y3-EMs">
@@ -885,7 +885,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="b2d-Yq-Fje" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2763" y="-622"/>
+            <point key="canvasLocation" x="3289" y="-622"/>
         </scene>
         <!--Reminder Table View Controller - reminder-->
         <scene sceneID="GuO-n3-XZr">
@@ -1167,7 +1167,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wES-hJ-W6x" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2237" y="-622"/>
+            <point key="canvasLocation" x="2763" y="-622"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="dze-ds-aM1">
@@ -1510,13 +1510,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                             <outlet property="delegate" destination="etz-Is-IZz" id="C4l-07-Wgj"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Profile" id="ep2-7p-S6M">
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="lWa-3S-EAf">
-                            <connections>
-                                <action selector="save:" destination="etz-Is-IZz" id="obK-Ws-s7i"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Profile" id="ep2-7p-S6M"/>
                     <connections>
                         <outlet property="pickerView" destination="A54-Jh-IBD" id="dSw-5H-3gd"/>
                     </connections>
@@ -1629,7 +1623,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="Vti-4R-8X2" kind="relationship" relationship="rootViewController" id="Bcz-O4-fmi"/>
+                        <segue destination="Vti-4R-8X2" kind="relationship" relationship="rootViewController" id="meZ-zQ-Ld0"/>
                     </connections>
                 </navigationController>
             </objects>
@@ -2050,6 +2044,24 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
             </objects>
             <point key="canvasLocation" x="3423" y="832"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="8gh-es-PKs">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="OlD-HC-6bH" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="NTw-jQ-C0B">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="60b-HT-LtA" kind="relationship" relationship="rootViewController" id="P1K-2h-m3a"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LwW-Bp-trT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1093" y="-238"/>
+        </scene>
     </scenes>
     <resources>
         <image name="call" width="142" height="141"/>
@@ -2069,6 +2081,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="sim_small" width="45" height="32"/>
         <image name="stnk_small" width="67" height="32"/>
     </resources>
+    <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

@@ -14,6 +14,7 @@
 #import "AABDBManager.h"
 #import "Insurance+Extended.h"
 #import "Personal+Export.h"
+#import "UIColor+AAB.h"
 
 
 #define kPickerAnimationDuration    0.40   // duration for the animation to slide the date picker into view
@@ -44,6 +45,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 @property (nonatomic, strong) NSIndexPath *datePickerIndexPath;
 
 @property (assign) NSInteger pickerCellRowHeight;
+@property (nonatomic, strong) UIBarButtonItem *editSaveButton;
 
 @end
 
@@ -64,7 +66,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         //            NSString * message = @"Please fill ";
         NSString *message = [[NSString alloc] init];
         if(!self.insurance.policyNumber || [self.insurance.policyNumber isEqualToString:@""]) {
-             message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Policy Number"];
+             message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Policy Number"];
             //show message
             [self showAlertWithTitle:@"Invalid input" message:message];
             
@@ -73,7 +75,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
             return;
         }
         if(!self.insurance.name || [self.insurance.name isEqualToString:@""]) {
-             message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Insurance name"];
+             message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Insurance name"];
             //show message
             [self showAlertWithTitle:@"Invalid input" message:message];
             
@@ -83,7 +85,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         }
        
         if(!self.insurance.policyPeriodFrom) {
-             message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Policy period from"];
+             message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Policy period from"];
             //show message
             [self showAlertWithTitle:@"Invalid input" message:message];
             
@@ -92,7 +94,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
             return;
         }
         if(!self.insurance.policyPeriodTo) {
-             message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Policy period to"];
+             message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Policy period to"];
             //show message
             [self showAlertWithTitle:@"Invalid input" message:message];
             
@@ -102,7 +104,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         }
         
         if(!self.insurance.coverage || [self.insurance.coverage isEqualToString:@""]) {
-            message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Coverage"];
+            message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Coverage"];
             //show message
             [self showAlertWithTitle:@"Invalid input" message:message];
             
@@ -251,6 +253,15 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     
     
     self.dataArray = @[policyNumber,insuranceName,periodFrom,periodTo,coverage];
+    
+    if (self.personal) {
+          self.editSaveButton = [[UIBarButtonItem alloc] initWithTitle:self.personal.isCustomer?@"Done":@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(save:)];
+    }else {
+          self.editSaveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(save:)];
+    }
+  
+    
+    self.navigationItem.rightBarButtonItems = @[self.editSaveButton];
 }
 
 - (void)dealloc
@@ -377,9 +388,13 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     AABTableHeaderView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:headerIdentifier];
     if (!headerView) {
         headerView = [[AABTableHeaderView alloc] initWithTitle:@"" actionTitle:nil alignCenterY:YES reuseIdentifier:headerIdentifier];
-        headerView.labelTitle.font = [UIFont thinFontWithSize:28];
-        headerView.labelTitle.textAlignment = NSTextAlignmentCenter;
-        headerView.labelTitle.textColor = [UIColor blackColor];
+//        headerView.labelTitle.font = [UIFont thinFontWithSize:28];
+//        headerView.labelTitle.textAlignment = NSTextAlignmentCenter;
+        UIFont *font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+        //        headerView.labelTitle.font = [UIFont thinFontWithSize:28];
+        headerView.labelTitle.font = font;
+        headerView.labelTitle.textAlignment = NSTextAlignmentLeft;
+        headerView.labelTitle.textColor = [UIColor AABLightBlue];
         headerView.backgroundView = [[UIView alloc] init];
         headerView.backgroundView.backgroundColor = [UIColor whiteColor];
     }
@@ -458,6 +473,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     
     // update the cell's date string
     cell.detailTextLabel.text = [self.dateFormatter stringFromDate:targetedDatePicker.date];
+            cell.detailTextLabel.textColor =[UIColor AABThinBlue];
     
     //#define kPolicyPeriodFromRow   2
     //#define kPolicyPeriodToRow     3
@@ -511,7 +527,9 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         }
         NSDictionary *itemData = self.dataArray[modelRow];
         cell.textLabel.text = [itemData valueForKey:kTitleKey];
+        cell.textLabel.textColor = [UIColor AABDeepBlue];
         cell.detailTextLabel.text = [self.dateFormatter stringFromDate:[itemData valueForKey:kDateKey]];
+                cell.detailTextLabel.textColor =[UIColor AABThinBlue];
         
         return cell;
     }else if(indexPath.row == kAddressRow){
@@ -573,7 +591,9 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         // we have either start or end date cells, populate their date field
         //
         cell.textLabel.text = [itemData valueForKey:kTitleKey];
+                cell.textLabel.textColor = [UIColor AABDeepBlue];
         cell.detailTextLabel.text = [self.dateFormatter stringFromDate:[itemData valueForKey:kDateKey]];
+                cell.detailTextLabel.textColor =[UIColor AABThinBlue];
     }
     else if ([cellIdentifier isEqualToString:kCell])
     {

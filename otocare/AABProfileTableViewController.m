@@ -13,6 +13,7 @@
 #import "Personal.h"
 #import "Personal+Extended.h"
 #import "AABDBManager.h"
+#import "UIColor+AAB.h"
 
 
 
@@ -70,6 +71,24 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 //}
 
 - (IBAction)cancel:(id)sender {
+    @try {
+        if (self.personal) {
+            NSManagedObjectContext * context = [AABDBManager sharedManager].localDatabase.managedObjectContext;
+            
+            [context deleteObject:self.personal];
+            
+            NSError* error = nil;
+            [context save:&error];
+            if (error) {
+                NSLog(@"Database fail to save");
+            }
+        }
+
+    }
+    @catch (NSException *exception) {
+        NSLog(@"exeption on cancel : %@",[exception description]);
+    }
+   
     
         [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -286,9 +305,13 @@ NSUInteger DeviceSystemMajorVersion()
     AABTableHeaderView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:headerIdentifier];
     if (!headerView) {
         headerView = [[AABTableHeaderView alloc] initWithTitle:@"" actionTitle:nil alignCenterY:YES reuseIdentifier:headerIdentifier];
-        headerView.labelTitle.font = [UIFont thinFontWithSize:28];
-        headerView.labelTitle.textAlignment = NSTextAlignmentCenter;
-        headerView.labelTitle.textColor = [UIColor blackColor];
+//        headerView.labelTitle.font = [UIFont thinFontWithSize:28];
+//        headerView.labelTitle.textAlignment = NSTextAlignmentCenter;
+        UIFont *font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+        //        headerView.labelTitle.font = [UIFont thinFontWithSize:28];
+        headerView.labelTitle.font = font;
+        headerView.labelTitle.textAlignment = NSTextAlignmentLeft;
+        headerView.labelTitle.textColor = [UIColor AABLightBlue];
         headerView.backgroundView = [[UIView alloc] init];
         headerView.backgroundView.backgroundColor = [UIColor whiteColor];
     }
@@ -344,6 +367,7 @@ NSUInteger DeviceSystemMajorVersion()
     
     // update the cell's date string
     cell.detailTextLabel.text = [self.dateFormatter stringFromDate:targetedDatePicker.date];
+            cell.detailTextLabel.textColor =[UIColor AABThinBlue];
     
   //save to database
     if (targetedCellIndexPath.row == kDateBirthRow) {
@@ -394,7 +418,9 @@ NSUInteger DeviceSystemMajorVersion()
         }
          NSDictionary *itemData = self.dataArray[modelRow];
         cell.textLabel.text = [itemData valueForKey:kTitleKey];
+                    cell.textLabel.textColor = [UIColor AABDeepBlue];
         cell.detailTextLabel.text = [self.dateFormatter stringFromDate:[itemData valueForKey:kDateKey]];
+                cell.detailTextLabel.textColor =[UIColor AABThinBlue];
 
 
         return cell;
@@ -473,7 +499,9 @@ NSUInteger DeviceSystemMajorVersion()
         // we have either start or end date cells, populate their date field
         //
         cell.textLabel.text = [itemData valueForKey:kTitleKey];
+                    cell.textLabel.textColor = [UIColor AABDeepBlue];
         cell.detailTextLabel.text = [self.dateFormatter stringFromDate:[itemData valueForKey:kDateKey]];
+                cell.detailTextLabel.textColor =[UIColor AABThinBlue];
     }
     else if ([cellIdentifier isEqualToString:kCell])
     {
@@ -640,7 +668,7 @@ NSUInteger DeviceSystemMajorVersion()
 
 
             if([self.personal.name isEqualToString:@""] || !self.personal.name) {
-                 message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Name"];
+                 message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Name"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -649,7 +677,7 @@ NSUInteger DeviceSystemMajorVersion()
                 return NO;
             }
             if([self.personal.email isEqualToString:@""] || !self.personal.email) {
-                   message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Email"];
+                   message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Email"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -658,7 +686,7 @@ NSUInteger DeviceSystemMajorVersion()
                 return NO;
             }
             if([self.personal.telephone isEqualToString:@""] || !self.personal.telephone) {
-                  message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Telephone"];
+                  message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Telephone"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -667,7 +695,7 @@ NSUInteger DeviceSystemMajorVersion()
                 return NO;
             }
             if([self.personal.address isEqualToString:@""] || !self.personal.address) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Address"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Address"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -677,7 +705,7 @@ NSUInteger DeviceSystemMajorVersion()
             }
             
             if(!self.personal.dateOfBirth) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Date of Birth"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Date of Birth"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -686,7 +714,7 @@ NSUInteger DeviceSystemMajorVersion()
                 return NO;
             }
             if(!self.personal.simExpiredDate) {
-                      message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"SIM expired date"];
+                      message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"SIM expired date"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -718,7 +746,7 @@ NSUInteger DeviceSystemMajorVersion()
                     [[segue destinationViewController] setPersonal:self.personal];
         }else {
             //show alert that some data must be filled before next step
-            NSString * message = @"Please fill ";
+            NSString * message = @"Please input your ";
             if (!self.personal.name) {
                 [message stringByAppendingString:@"Name"];
             }

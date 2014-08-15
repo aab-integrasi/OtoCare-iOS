@@ -7,7 +7,8 @@
 //
 
 #import "AABTableViewController.h"
+#import "Personal.h"
 
 @interface AABProfileVC : AABTableViewController
-
+@property (nonatomic,strong) Personal * personal;
 @end

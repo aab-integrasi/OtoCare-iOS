@@ -20,6 +20,7 @@
 #import "FPPopoverController.h"
 #import "DemoTableController.h"
 #import "FPPopoverController.h"
+#import "UIColor+AAB.h"
 
 #define kPickerAnimationDuration    0.40   // duration for the animation to slide the date picker into view
 #define kDatePickerTag              99     // view tag identifiying the date picker view
@@ -179,12 +180,12 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
 
 
     self.backButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:self action:@selector(back)];
-    
+            self.backButton.tintColor = [UIColor whiteColor];
     self.navigationItem.leftBarButtonItems = @[self.backButton];
     
     
     self.editSaveButton = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleBordered target:self action:@selector(setButton)];
-    
+        self.editSaveButton.tintColor = [UIColor whiteColor];
     self.navigationItem.rightBarButtonItems = @[self.editSaveButton];
 }
 
@@ -330,7 +331,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         //        headerView.labelTitle.font = [UIFont thinFontWithSize:28];
         headerView.labelTitle.font = font;
         headerView.labelTitle.textAlignment = NSTextAlignmentLeft;
-        headerView.labelTitle.textColor = [UIColor blackColor];
+        headerView.labelTitle.textColor = [UIColor AABLightBlue];
         headerView.backgroundView = [[UIView alloc] init];
         headerView.backgroundView.backgroundColor = [UIColor whiteColor];
     }
@@ -386,6 +387,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
     
     // update the cell's date string
     cell.detailTextLabel.text = [self.dateFormatter stringFromDate:targetedDatePicker.date];
+            cell.detailTextLabel.textColor =[UIColor AABThinBlue];
     
     if (targetedCellIndexPath.row == kDateSTNKRow) {
         //save date
@@ -433,7 +435,9 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         }
         NSDictionary *itemData = self.dataArray[modelRow];
         cell.textLabel.text = [itemData valueForKey:kTitleKey];
+                    cell.textLabel.textColor = [UIColor AABDeepBlue];
         cell.detailTextLabel.text = [self.dateFormatter stringFromDate:[itemData valueForKey:kDateKey]];
+                cell.detailTextLabel.textColor =[UIColor AABThinBlue];
         
         return cell;
     }
@@ -507,7 +511,9 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
         // we have either start or end date cells, populate their date field
         //
         cell.textLabel.text = [itemData valueForKey:kTitleKey];
+                    cell.textLabel.textColor = [UIColor AABDeepBlue];
         cell.detailTextLabel.text = [self.dateFormatter stringFromDate:[itemData valueForKey:kDateKey]];
+                cell.detailTextLabel.textColor =[UIColor AABThinBlue];
     }
     else if ([cellIdentifier isEqualToString:kCell])
     {
@@ -699,7 +705,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
             
             //            [message stringByAppendingString:@" value"];
             if([self.vehicle.policeNumber isEqualToString:@""] || !self.vehicle.policeNumber) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Police number"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Police number"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -708,7 +714,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                 return NO;
             }
             if([self.vehicle.brand isEqualToString:@""] || !self.vehicle.brand) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Brand"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Brand"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -718,7 +724,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                 
             }
             if([self.vehicle.type isEqualToString:@""] || !self.vehicle.type) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Type"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Type"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -727,7 +733,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                 return NO;
             }
             if([self.vehicle.year isEqualToString:@""] || !self.vehicle.year) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Year"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Year"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -736,7 +742,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                 return NO;
             }
             if([self.vehicle.chassisNumber isEqualToString:@""] || !self.vehicle.chassisNumber) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Chassis Number"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Chassis Number"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -745,7 +751,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                 return NO;
             }
             if([self.vehicle.engineNumber isEqualToString:@""] || !self.vehicle.engineNumber) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"Engine Number"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"Engine Number"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
@@ -754,7 +760,7 @@ static NSString *kCell = @"cell";     // the remaining cells at the end
                 return NO;
             }
             if(!self.vehicle.stnkExpiredDate) {
-                message = [NSString stringWithFormat:@"%@%@",@"Please fill ",@"STNK expired Date"];
+                message = [NSString stringWithFormat:@"%@%@",@"Please input your ",@"STNK expired Date"];
                 //show message
                 [self showAlertWithTitle:@"Invalid input" message:message];
                 
